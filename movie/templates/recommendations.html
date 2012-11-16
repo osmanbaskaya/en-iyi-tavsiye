@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h2> Recommendations for {{ user.username }} </h2>
+<br\><br\>
+
+
+<table border="1">
+{% for item, pre, norm in form.recs %}
+<tr><td> {{ item.name }} </td><td> {{ pre }} </td><td> {{ norm }} </td></tr>
+{% endfor %}
+</table>
+
+
+{% endblock %}
+
+

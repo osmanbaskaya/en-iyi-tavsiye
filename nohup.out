@@ -1,0 +1,22 @@
+121111 23:20:38 [Note] Plugin 'FEDERATED' is disabled.
+121111 23:20:38 InnoDB: The InnoDB memory heap is disabled
+121111 23:20:38 InnoDB: Mutexes and rw_locks use GCC atomic builtins
+121111 23:20:38 InnoDB: Compressed tables use zlib 1.2.3.4
+121111 23:20:38 InnoDB: Initializing buffer pool, size = 64.0M
+121111 23:20:38 InnoDB: Completed initialization of buffer pool
+121111 23:20:39 InnoDB: highest supported file format is Barracuda.
+121111 23:20:39  InnoDB: Waiting for the background threads to start
+121111 23:20:40 InnoDB: 1.1.8 started; log sequence number 36856733620
+121111 23:20:40 [Note] Server hostname (bind-address): '0.0.0.0'; port: 8080
+121111 23:20:40 [Note]   - '0.0.0.0' resolves to '0.0.0.0';
+121111 23:20:40 [Note] Server socket created on IP: '0.0.0.0'.
+121111 23:20:40 [Note] Event Scheduler: Loaded 0 events
+121111 23:20:40 [Note] mysqld: ready for connections.
+Version: '5.5.24-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 8080  (Ubuntu)
+121111 23:28:50 [Note] mysqld: Normal shutdown
+
+121111 23:28:50 [Note] Event Scheduler: Purging the queue. 0 events
+121111 23:28:50  InnoDB: Starting shutdown...
+121111 23:28:51  InnoDB: Shutdown completed; log sequence number 36856733630
+121111 23:28:51 [Note] mysqld: Shutdown complete
+

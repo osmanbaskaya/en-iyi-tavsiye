@@ -1,0 +1,21 @@
+{% extends "based.html" %}
+{% load i18n %}
+{% block title %} En İyi Tavsiye - {% trans "User Login" %} {% endblock %}
+{% block body %}
+
+
+{% if error_message %}
+   {{ error_message }} </br> </br>
+{% endif %}
+
+{% trans "Please enter your username and password" %}
+
+
+<form action="/login/" method="POST">
+    {% csrf_token %}
+    <input type="text" name="username" />
+    <input type="password" name="password1" />
+    <!--<input type="hidden" name="next" value="/movie/myratings/" />-->
+    <input type="submit" value={% trans "login" %} />
+</form>
+{% endblock %}
