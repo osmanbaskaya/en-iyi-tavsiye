@@ -13,8 +13,7 @@
   {{ formset.management_form }}
 {% for f in formset %}
 <div class="btn-group" data-toggle="buttons-radio">
-    <!--{{ f.item_name }}-->
-    <a href="/movie/detail/{{f.item_id.value}}">{{f.item_name.value}}</a>
+  {{ f.item_name }}
   {{ f.item_id }}
   <!--<button class="btn" type=button value="1" id="id_form-{{forloop.counter0}}-rating_0"-->
   <!--name="form-{{forloop.counter0}}-rating">1</button>-->

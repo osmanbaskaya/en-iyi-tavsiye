@@ -16,10 +16,18 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django_mongodb_engine', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'eniyitavsiye',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'rast0gele1',                  # Not used with sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': 8090,                      # Set to empty string for default. Not used with sqlite3.
+    },
+    'mysql': {
+        'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'eniyitavsiye',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': 8080,                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -45,8 +53,7 @@ LANGUAGES = (
             )
 
 #SITE_ID = '4ffb66223f4ca3292500001d' #Osman PC
-#SITE_ID = #'500489a946f03ffb93e1fac4' #Instance'a ait
-SITE_ID = 1
+SITE_ID = '500489a946f03ffb93e1fac4' #Instance'a ait
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -136,7 +143,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    #'djangotoolbox',
+    'djangotoolbox',
     'bootstrap',
     'registration',
     'iface',

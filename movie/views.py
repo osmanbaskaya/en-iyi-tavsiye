@@ -115,37 +115,24 @@ def feed_rec(request):
 @login_required(login_url='/login/')
 def get_rec(request):
     import movie.webservice
-    w = movie.webservice.WebService('netflix')
+    w = movie.webservice.WebService()
     recs = w.get_recommendations(request.user.id)
     reclist = []
-    maxx, minxx = 0, 5
     for item in recs:
-        item_id, prediction = item.split(';')
-        prediction = float(prediction)
-        if prediction > maxx : maxx = prediction
-        if prediction < minxx : minxx = prediction
-        i = Item.objects.get(pk=item_id)
-        reclist.append([i,prediction,0])
+        i = Item.objects.get(pk=item.id)
+        reclist.append(i.name)
 
-    for t in reclist:
-        t[2] = (t[1]-minxx)/(maxx-minxx)*4+1
-
+    #response = '</br>'.join([str(i) for i in recl])
+    #header = "<h1>Recommendation List for %s </h1>" % request.user.username
+    #return HttpResponse(header + response)
 
     form = RecommendationForm()
     form.recs = reclist
     return render(request, 'recommendations.html', {
         'form': form, 'user': request.user,
     })
-@login_required(login_url='/login/')
-def train(request):
-    import movie.webservice
-    w = movie.webservice.WebService('netflix')
-    w.train_model()
-    return myratings(request)
 
 
-def detail(request,pk):
-    from django.db.models import Avg, Count
-    item = Item.objects.get(pk=pk)
-    res = Rating.objects.filter(item_id=item.pk).aggregate(num_ratings=Count('id'),avg_rating=Avg('rating'))
-    return HttpResponse(str(res))
+def profile(request):
+    pass
+
