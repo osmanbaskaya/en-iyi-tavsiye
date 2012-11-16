@@ -17,7 +17,7 @@ sys.path.append(location)
 from suds.client import Client
 from movie.models import User
 import time
-URL = 'http://54.247.127.185:8080/RecommenderEngine/services/Recommender?wsdl'
+URL = 'http://54.247.127.185:8080/RecommenderEngine/searvices/Recommender?wsdl'
 
 
 

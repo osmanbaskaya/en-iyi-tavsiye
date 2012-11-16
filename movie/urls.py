@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'feed_rec/','movie.views.feed_rec'),
     url(r'get_rec/','movie.views.get_rec'),
     url(r'myratings/','movie.views.myratings'),
+    url(r'myprofile/','movie.views.myprofile'),
     url(r'detail/(?P<pk>\w+)/','movie.views.detail'),
     # Examples:
     # url(r'^$', 'web.views.home', name='home'),

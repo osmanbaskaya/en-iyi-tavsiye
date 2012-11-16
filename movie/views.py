@@ -149,3 +149,20 @@ def detail(request,pk):
     item = Item.objects.get(pk=pk)
     res = Rating.objects.filter(item_id=item.pk).aggregate(num_ratings=Count('id'),avg_rating=Avg('rating'))
     return HttpResponse(str(res))
+
+@login_required(login_url='/login/')
+def myprofile(request):
+    import movie.webservice
+    w = movie.webservice.WebService('netflix')
+    nids = w.get_nearestneighbors(request.user.id) # neighbors ids
+    neighbors = []
+    for n_id in nids:
+        neighbor = User.objects.get(pk=n_id)
+        neighbors.append(neighbor)
+        
+
+    form = RecommendationForm()
+    form.neigbors = neighbors
+    return render(request, 'myprofile.html', {
+        'form': form, 'user': request.user,
+    })
