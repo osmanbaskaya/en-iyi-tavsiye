@@ -17,27 +17,19 @@
   <table>
   <tr>
   <td>
-      <!--<input type="text" value="{{ f.instance.item.name }}" size="40" readonly />-->
       <a href="/movie/detail/{{f.instance.item.pk}}">{{f.instance.item.name}}</a>
   {{ f.id }}
   </td>
   <td>
-  <input {%if f.instance.rating == 1 %}checked{%endif%} type=radio  value="1" id="id_form-{{forloop.counter0}}-rating_0"
-  name="form-{{forloop.counter0}}-rating"> 1
-  <input {%if f.instance.rating == 2 %}checked{%endif%}  type=radio  value="2" id="id_form-{{forloop.counter0}}-rating_1"
-  name="form-{{forloop.counter0}}-rating"> 2
-  <input  {%if f.instance.rating == 3 %}checked{%endif%} type=radio  value="3" id="id_form-{{forloop.counter0}}-rating_2"
-  name="form-{{forloop.counter0}}-rating"> 3
-  <input  {%if f.instance.rating == 4 %}checked{%endif%} type=radio  value="4" id="id_form-{{forloop.counter0}}-rating_3"
-  name="form-{{forloop.counter0}}-rating"> 4
-  <input  {%if f.instance.rating == 5 %}checked{%endif%} type=radio  value="5" id="id_form-{{forloop.counter0}}-rating_4"
-  name="form-{{forloop.counter0}}-rating"> 5
+      {%for v in rlist %}
+      <input name="rgroup_{{f.instance.item.pk}}" {%if f.instance.rating == v %}checked{%endif%} type=radio onclick="$.get('/movie/rate/?item_id={{f.instance.item.pk}}&rating={{v}}');" > {{v}} 
+      {% endfor %}
   </td>
   <td>
-  <form method="POST" action="/movie/myratings/">{% csrf_token %}
+      <form method="POST" action="/movie/myratings/?action=del&item_id={{f.instance.item.pk}}">{% csrf_token %}
     <input type="hidden" name="rating_id" value="{{f.instance.pk}}"/ >
-    <input type="submit" value="delete" name="submit"/>
-  </form>
+        <input type="submit" value="clear" name="submit"/>
+      </form>
   </td>
   </tr>
   </table>

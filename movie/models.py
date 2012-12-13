@@ -28,8 +28,6 @@ class Rating(models.Model):
     item = models.ForeignKey(Item)
     rating = models.IntegerField()
     #rated_on = models.DateTimeField(auto_now_add=True)
-    class Meta:
-        db_table = 'netflix'
 
     @staticmethod
     def get_ratings_of(user):

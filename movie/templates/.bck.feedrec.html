@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block body %}
+<div id="main">
+</br>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
+<form method="POST" action="/movie/feed_rec/">{% csrf_token %}
+    <input type="text" value="" name="query" />
+    <input type="submit" value="search" />
+</form>
+
+
+<form method="POST" action="/movie/feed_rec/">{% csrf_token %}
+  {{ formset.management_form }}
+{% for f in formset %}
+<div class="btn-group" data-toggle="buttons-radio">
+    <!--{{ f.item_name }}-->
+    <a href="/movie/detail/{{f.item_id.value}}">{{f.item_name.value}}</a>
+  {{ f.item_id }}
+  <!--<button class="btn" type=button value="1" id="id_form-{{forloop.counter0}}-rating_0"-->
+  <!--name="form-{{forloop.counter0}}-rating">1</button>-->
+  <input type=radio  value="1" id="id_form-{{forloop.counter0}}-rating_0"
+  name="form-{{forloop.counter0}}-rating"> 1
+  <input type=radio  value="2" id="id_form-{{forloop.counter0}}-rating_1"
+  name="form-{{forloop.counter0}}-rating"> 2
+  <input type=radio  value="3" id="id_form-{{forloop.counter0}}-rating_2"
+  name="form-{{forloop.counter0}}-rating"> 3
+  <input type=radio  value="4" id="id_form-{{forloop.counter0}}-rating_3"
+  name="form-{{forloop.counter0}}-rating"> 4
+  <input type=radio  value="5" id="id_form-{{forloop.counter0}}-rating_4"
+  name="form-{{forloop.counter0}}-rating"> 5
+</div>
+{% endfor %}
+<input type="submit" value="submit" />
+</form>
+
+</div>
+{% endblock %}
+
+

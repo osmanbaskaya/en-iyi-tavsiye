@@ -14,6 +14,7 @@
     </style>
     <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<!--<script type="text/javascript" src="jquery-1.8.3.min.js"/>-->
 
 
 
@@ -55,10 +56,10 @@
       </div>
     </div>
     <div class="container">
-        <select name="lang" id="lang" onchange="window.location='/'+$(this).val();">
+        <!--<select name="lang" id="lang" onchange="window.location='/'+$(this).val();">
             <option value="movie/myratings/" selected="selected">movie</option>
             <option value="book/myratings/">book</option>
-        </select>
+        </select>-->
         {% block body %} 
         {% endblock %}
     </div> <!-- /container -->

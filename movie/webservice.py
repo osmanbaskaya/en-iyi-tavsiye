@@ -17,7 +17,7 @@ sys.path.append(location)
 from suds.client import Client
 from movie.models import User
 import time
-URL = 'http://54.247.127.185:8080/RecommenderEngine/RecommenderWS?wsdl'
+URL = 'http://54.246.115.200:8080/RecommenderEngine/RecommenderWS?wsdl'
 
 
 
@@ -92,7 +92,7 @@ class WebService(object):
             return self.get_recommendations(user_id, n)
 
     def get_nearestneighbors(self, user_id):
-        return self._client.service.getNearestNeighbors(self.context, user_id)
+        return self._client.service.getNearestNeighborList(self.context, user_id)
 
 
 def build_whole_ISM():

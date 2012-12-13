@@ -8,13 +8,27 @@ from django.template import RequestContext
 from django.forms.formsets import formset_factory
 from django.core.context_processors import csrf
 from django.forms.models import modelformset_factory
+import json,sys
+
+@login_required(login_url='/login/')
+def reclist(request):
+    taglist = request.GET.getlist('tag')
+    reclist = [{'title':Item.objects.get(pk=3241).name, 'p':5,'normp':0}]*20
+    reclist.reverse();
+    return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
 @login_required(login_url='/login/')
 def myratings(request):
+    """
+    if request.GET.get('action') == 'del':
+        Rating.objects.filter(user=request.user,item_id=request.GET.get('item_id')).delete()
+        q = Rating.objects.filter(user=request.user)
+    """
+
     RatingFormSet = modelformset_factory(Rating, form=RatingForm, extra=0)
     
     query=''
-    if request.method == "POST" and request.POST.get('submit')=='delete':
+    if request.method == "POST" and request.POST.get('submit')=='clear':
         #Ragt
         Rating.objects.get(pk=request.POST.get('rating_id'), user=request.user).delete()
         q = Rating.objects.filter(user=request.user)
@@ -42,7 +56,7 @@ def myratings(request):
 
     formset = RatingFormSet(queryset=q)
 
-    c = {'user':request.user,'query':query,
+    c = {'user':request.user,'query':query,'rlist':xrange(1,6),
         'formset':formset}
     c.update(csrf(request))
     return render_to_response('myratings.html', c,
@@ -68,6 +82,18 @@ def _myratings(request):
     return render_to_response('myratings.html', c,
                         context_instance=RequestContext(request))
 
+
+@login_required(login_url='/login/')
+def rate(request):
+    u = request.user
+    i = Item.objects.get(pk=request.GET.get('item_id'))
+    r = int(request.GET.get('rating'))
+
+    if Rating.objects.filter(user=u,item=i).count() == 1:
+        Rating.objects.filter(user=u,item=i).delete()
+
+    Rating.objects.create(user=u,item=i,rating=r)
+    return HttpResponse('ok')
 
 @login_required(login_url='/login/')
 def feed_rec(request):
@@ -107,7 +133,7 @@ def feed_rec(request):
   formset = UnratedFormSet(
           initial=[{'item_id':i.id,'item_name':i.name } for i in unrated_items])
 
-  c = {'user':request.user,
+  c = {'user':request.user,'rlist':xrange(1,6),
         'formset':formset}
   c.update(csrf(request))
   return render_to_response('feedrec.html', c, context_instance=RequestContext(request))
@@ -115,6 +141,7 @@ def feed_rec(request):
 @login_required(login_url='/login/')
 def get_rec(request):
     import movie.webservice
+    """
     w = movie.webservice.WebService('netflix')
     recs = w.get_recommendations(request.user.id)
     reclist = []
@@ -130,11 +157,13 @@ def get_rec(request):
     for t in reclist:
         t[2] = (t[1]-minxx)/(maxx-minxx)*4+1
 
-
+    """
+    reclist = [(Item.objects.get(pk=3241), 5,0)]*20
+    reclist.reverse()
     form = RecommendationForm()
     form.recs = reclist
     return render(request, 'recommendations.html', {
-        'form': form, 'user': request.user,
+        'form': form, 'user': request.user,'tags':['war'],
     })
 @login_required(login_url='/login/')
 def train(request):
