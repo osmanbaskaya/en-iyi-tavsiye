@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'myprofile/','movie.views.myprofile'),
     url(r'rate/','movie.views.rate'),
     url(r'reclist','movie.views.reclist'),
+    url(r'search/','movie.views.search'),
     url(r'detail/(?P<pk>\w+)/','movie.views.detail'),
     # Examples:
     # url(r'^$', 'web.views.home', name='home'),

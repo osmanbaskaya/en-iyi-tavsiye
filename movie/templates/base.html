@@ -15,6 +15,14 @@
     <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
 <!--<script type="text/javascript" src="jquery-1.8.3.min.js"/>-->
+<script>
+/*$(function(){
+        $('#target').submit(function() {
+            alert('Handler for .submit() called.');
+            return false;
+            });
+        });*/
+</script>
 
 
 
@@ -60,6 +68,16 @@
             <option value="movie/myratings/" selected="selected">movie</option>
             <option value="book/myratings/">book</option>
         </select>-->
+        <ul class="nav nav-tabs">
+            <li class="active">
+            <a href="#">Movie</a>
+            </li>
+            <li><a href="#">Book</a></li>
+            <li><a href="#">Music</li>
+                <form id="search_form" action="/movie/search/" class="navbar-search pull-right">
+                      <input type="text" name="q" class="search-query" placeholder="Search">
+                  </form>
+        </ul>
         {% block body %} 
         {% endblock %}
     </div> <!-- /container -->

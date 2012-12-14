@@ -3,11 +3,6 @@
 <div id="main">
 </br>
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
-<form method="POST" action="/movie/feed_rec/">{% csrf_token %}
-    <input type="text" value="" name="query" />
-    <input type="submit" value="search" />
-</form>
-
 
 {% for f in formset %}
 <div class="btn-group" data-toggle="buttons-radio">

@@ -11,6 +11,19 @@ from django.forms.models import modelformset_factory
 import json,sys
 
 @login_required(login_url='/login/')
+def search(request):
+    RatingFormSet = modelformset_factory(Rating, form=RatingForm, extra=0)
+    items = Item.objects.filter( name__icontains=request.GET.get('q'))
+    item_ids=[i.id for i in items]
+    q = Rating.objects.filter(user=request.user,item__in = item_ids)
+    formset = RatingFormSet(queryset=q)
+
+    c = {'user':request.user,'rlist':xrange(1,6),
+        'formset':formset}
+    c.update(csrf(request))
+    return render_to_response('myratings.html', c,
+                        context_instance=RequestContext(request))
+@login_required(login_url='/login/')
 def reclist(request):
     taglist = request.GET.getlist('tag')
     reclist = [{'title':Item.objects.get(pk=3241).name, 'p':5,'normp':0}]*20
