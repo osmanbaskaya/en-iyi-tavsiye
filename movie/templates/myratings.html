@@ -3,32 +3,29 @@
 </br>
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
 
-<form method="POST" action="/movie/myratings/">{% csrf_token %}
-  {{ formset.management_form }}
-{% for f in formset %}
+Number of rated movies : {{ ratings|length }}
+<table>
+{% for f in ratings %}
+<tr>
+<td>
+<a href="/movie/detail/{{f.item.pk}}">{{f.item.name}}</a>
+</td>
+<td>
 <div class="btn-group" data-toggle="buttons-radio">
-  <table>
-  <tr>
-  <td>
-      <a href="/movie/detail/{{f.instance.item.pk}}">{{f.instance.item.name}}</a>
-  {{ f.id }}
-  </td>
-  <td>
       {%for v in rlist %}
-      <input name="rgroup_{{f.instance.item.pk}}" {%if f.instance.rating == v %}checked{%endif%} type=radio onclick="$.get('/movie/rate/?item_id={{f.instance.item.pk}}&rating={{v}}');" > {{v}} 
+      <input name="rgroup_{{f.item.pk}}" {%if f.rating == v %}checked{%endif%} type=radio onclick="$.get('/movie/rate/?item_id={{f.item.pk}}&rating={{v}}');" > {{v}} 
       {% endfor %}
-  </td>
-  <td>
-      <form method="POST" action="/movie/myratings/?action=del&item_id={{f.instance.item.pk}}">{% csrf_token %}
-    <input type="hidden" name="rating_id" value="{{f.instance.pk}}"/ >
+</div>
+</td>
+<td>
+        <form method="POST" action="/movie/myratings/">{% csrf_token %}
+        <input type="hidden" name="rating_id" value="{{f.pk}}"/ >
         <input type="submit" value="clear" name="submit"/>
       </form>
-  </td>
-  </tr>
-  </table>
-</div>
+</td>
+</tr>
 {% endfor %}
-</form>
+</table>
 {% endblock %}
 
 

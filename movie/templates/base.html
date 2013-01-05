@@ -1,86 +1,90 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>En iyi Tavsiye</title>
+    <head>
+        <meta charset="utf-8">
+        <title>En iyi Tavsiye</title>
 
-    <!-- Le styles -->
-    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-<!--<script type="text/javascript" src="jquery-1.8.3.min.js"/>-->
-<script>
-/*$(function(){
-        $('#target').submit(function() {
-            alert('Handler for .submit() called.');
-            return false;
-            });
-        });*/
-</script>
+        <!-- Le styles -->
+        <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+        <!--<script type="text/javascript" src="jquery-1.8.3.min.js"/>-->
+            <script>
+            /*$(function(){
+              $('#target').submit(function() {
+              alert('Handler for .submit() called.');
+              return false;
+              });
+              });*/
+          </script>
 
 
 
-<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+          <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
+          <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+          <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <![endif]-->
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
-  </head>
+          <!-- Le fav and touch icons -->
+          <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
+      </head>
 
-  <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <a class="brand" href="/"><img src="{{STATIC_URL}}img/logo.png"></a>
-            <!--<span class="icon-bar"></span>-->
-          </a>
-          <a class="brand" href="#"></a>
-          <div class="nav-collapse">
-            <ul class="nav">
+      <body>
+          <div class="navbar navbar-fixed-top">
+              <div class="navbar-inner">
+                  <div class="container">
+                      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                          <!--<a class="brand" href="/"><img src="{{STATIC_URL}}img/logo.png"></a>-->
+                          <!--<span class="icon-bar"></span>-->
+                      </a>
+                      <a class="brand" href="#"></a>
+                      <div class="nav-collapse">
+                          <ul class="nav">
 
-              <li class="active"><a href="/movie/myprofile">{{user.username}}</a></li>
-              <li><a href="/movie/myratings">{% trans "My Ratings" %}</a></li>
-              <li><a href="/movie/feed_rec">{% trans "Feed" %}</a></li>
-              <li><a href="/movie/get_rec">{% trans "Get Recommendations" %}</a></li>
-              <li><a href="/movie/train">{% trans "Train" %}</a></li>
-              <li><a href="/logout/">{% trans "Logout" %}</a></li>
-              <!--<a href="/movie/myratings">{% trans "My Ratings" %}</a>-->
-              <!--<a href="/movie/feed_rec">{% trans "Feed" %}</a>-->
-              <!--<a href="/movie/feed_rec">{% trans "Get Recommendations" %}</a>-->
-              <!--<a href="/logout/">{% trans "Logout" %}</a>-->
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    <div class="container">
-        <!--<select name="lang" id="lang" onchange="window.location='/'+$(this).val();">
-            <option value="movie/myratings/" selected="selected">movie</option>
-            <option value="book/myratings/">book</option>
-        </select>-->
-        <ul class="nav nav-tabs">
-            <li class="active">
-            <a href="#">Movie</a>
-            </li>
-            <li><a href="#">Book</a></li>
-            <li><a href="#">Music</li>
-                <form id="search_form" action="/movie/search/" class="navbar-search pull-right">
-                      <input type="text" name="q" class="search-query" placeholder="Search">
+                              <li class="active"><a href="/movie/profile">{{user.username}}</a></li>
+                              <li><a href="/movie/myratings">{% trans "My Ratings" %}</a></li>
+                              <li><a href="/movie/feed_rec">{% trans "Feed" %}</a></li>
+                              <li><a href="/movie/get_rec">{% trans "Get Recommendations" %}</a></li>
+                              <li><a href="/movie/train">{% trans "Train" %}</a></li>
+                              <li><a href="/logout/">{% trans "Logout" %}</a></li>
+                              <!--<a href="/movie/myratings">{% trans "My Ratings" %}</a>-->
+                              <!--<a href="/movie/feed_rec">{% trans "Feed" %}</a>-->
+                              <!--<a href="/movie/feed_rec">{% trans "Get Recommendations" %}</a>-->
+                              <!--<a href="/logout/">{% trans "Logout" %}</a>-->
+                          </ul>
+                      </div><!--/.nav-collapse -->
+                  </div>
+              </div>
+          </div>
+          <div class="container">
+              <ul class="nav nav-tabs">
+                  <li class="active"> <a href="#">Movie</a> </li>
+                  <li><a href="#">Book</a></li>
+                  <li><a href="#">Music</a></li>
+                   <form style="float:right" id="search_form" action="/movie/search/" class="navbar-search pull-right">
+                      <input type="text" name="q" class="search-query" placeholder="Search"/>
                   </form>
-        </ul>
-        {% block body %} 
-        {% endblock %}
-    </div> <!-- /container -->
-</body>
-</html>
+              </ul>
+              <div id="left" style="float:left;">
+                  {% block body %} 
+                  {% endblock %}
+              </div>
+              <div id="right" style="float:right">
+                  <table>
+                      {% for u in fusers %}
+                      <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a href="/movie/profile/?u={{u.pk}}">{{u.username}}</a></td>
+                          <td><button onclick="$.get('/movie/follow/?user={{u.pk}}');">Follow</button></td></tr>
+                      {% endfor %}
+                  </table>
+              </div>
+          </div> <!-- /container -->
+      </body>
+  </html>
 

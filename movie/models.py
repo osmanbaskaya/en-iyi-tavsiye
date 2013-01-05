@@ -1,5 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from iface.models import UserProfile
+
+context = 'movie'
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 class Item(models.Model):
     name = models.TextField()
@@ -7,21 +12,28 @@ class Item(models.Model):
     #additional fields: isbn,author, director
 
     year = models.IntegerField('date published', null=True)
-    genres = models.TextField(null=True) 
-    db = models.CharField(max_length=20) # movielens, netflix etc.
 
     @staticmethod
     def get_rated_by(user):
-      return [r.item_id for r in Rating.objects.filter(user=user)]
+        return [r.item_id for r in Rating.objects.filter(user=user)]
 
     @staticmethod
     def get_unrated_by(user):
-      item_ids = [r.item_id for r in Rating.objects.filter(user=user)]
-      return Item.objects.exclude(id__in = item_ids)
+        item_ids = [r.item_id for r in Rating.objects.filter(user=user)]
+        return Item.objects.exclude(id__in = item_ids)
 
     def __unicode__(self):
-      return self.name
-      
+        return self.name
+    class Meta:
+        db_table='%s_item' % context
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User)
+    followee = models.ForeignKey(User)
+
+    class Meta:
+        db_table='%s_follow' % context
 
 class Rating(models.Model):
     user = models.ForeignKey(User,related_name='+')
@@ -31,22 +43,69 @@ class Rating(models.Model):
 
     @staticmethod
     def get_ratings_of(user):
-      return Rating.objects.filter(user=user)
+        return Rating.objects.filter(user=user)
+    class Meta:
+        db_table='%s_rating' % context
+
+class Tag(models.Model):
+    item = models.ForeignKey(Item)
+    tag = models.CharField(max_length=50)
+    class Meta:
+        db_table='%s_tag' % context
+
+class TagName(models.Model):
+    name = models.CharField(max_length=50)
+    class Meta:
+        db_table='%s_tagname' % context
+
+class UserRec(models.Model):
+    user = models.ForeignKey(User)
+    item = models.ForeignKey(Item)
+    comment = models.CharField(max_length=150,blank=True)
+    class Meta:
+        db_table='%s_userrec' % context
 
 
-def generate_db():
-  import uuid
-  Item.objects.filter().delete()
-  User.objects.filter().delete()
-  Rating.objects.filter().delete()
-  User.objects.create_user('a','a','a')
-  items = [Item.objects.create(name=uuid.uuid4().hex) for i in xrange(5)]
-  users = [User.objects.create_user(str(i),str(i),str(i)) for i in xrange(5)]
+def random_tags():
+    from random import randint
+    Tag.objects.filter().delete()
+    tagnames = TagName.objects.filter()
+    for tg in tagnames:
+        pass
+    for item in Item.objects.filter():
+        tagc= randint(2,3)
+        for t in xrange(tagc):
+            i = randint(0,len(tagnames)-1)
+            tag = Tag.objects.create(item=item,tag=tagnames[i].name)
+            print tag.item.pk,tag.tag
 
-  import random as r
-  for u in users:
-    for i in xrange(r.randint(2,5)):
-      Rating.objects.create(user=u,
-          item=items[i],
-          rating=r.randint(1,5))
+def generate_test():
+    """
+    1::Toy Story (1995)::Animation|Children's|Comedy
+    2::Jumanji (1995)::Adventure|Children's|Fantasy
+    """
+    Item.objects.filter().delete()
+    Tag.objects.filter().delete()
+    TagName.objects.filter().delete()
+    tagset = set()
+    with open('/var/datasets/movielens/ml-1m/movies.dat') as f:
+        for l in f.readlines():
+            pk, name_year, tags = l.split('::')
+            try:
+                year = name_year.split(' ')[-1][1:-1]
+                name = ' '.join(name_year.split(' ')[0:-1])
+                print pk,year,name
+                item = Item.objects.create(pk=pk,
+                        name=name,
+                        year=year)
+            except:
+                continue
+            #bugli, iki kere ekliyor 26.12.2012
+            tagl = tags.lower().split('|')
+            for t in tagl:
+                if not t in tagset:
+                    TagName.objects.create(name=t)
 
+            map(tagset.add,tagl) 
+            for t in tagl:
+                Tag.objects.create(item=item,tag=t)

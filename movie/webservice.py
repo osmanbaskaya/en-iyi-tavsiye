@@ -26,8 +26,6 @@ class WebService(object):
     _instance =  None
     total_user = User.objects.count()
 
-
-
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(WebService, cls).__new__(
@@ -35,9 +33,9 @@ class WebService(object):
             cls._instance._client = None
         return cls._instance
     
-    def __init__(self, context, url=URL):
+    def __init__(self, context):
         self.context = context
-        self.url = url
+        self.url = URL
         self.connect()
         #self.client = None
 
@@ -67,6 +65,13 @@ class WebService(object):
 
     def test(self):
         self._client.service.test()
+
+    def get_recs(self, user, tags='', offset=0, limit=100):
+        return self._client.service.getRecommendationListPaginated(self.context,
+                user.pk,
+                tags,
+                offset,
+                limit)
 
     def get_recommendations(self, user_id, n=100):
 

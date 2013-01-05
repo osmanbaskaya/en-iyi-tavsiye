@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
 class UserProfile(models.Model):
-  user = models.OneToOneField(User)
-
-  @property
-  def rated_items(self):
-    return Item.objects.filter(user=self.user)
+    user = models.OneToOneField(User)
+    pic_url = models.CharField(max_length=250,
+            default='https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTfrolAREDhDEX36N0_W25UDCG0mQHVKaOsovYWHIqwYTALyVyB')

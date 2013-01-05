@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block body %}
+<br\>
+
+<h2><img width="75px" height="150px" src="{{auser.profile.pic_url}}"/> {{ auser.username }}
+
+{%if auser != user %}
+{%if isfollowing %}
+<button onclick="$.get('/movie/unfollow/?user={{auser.pk}}');">Unfollow</button>
+{% else %}
+<button onclick="$.get('/movie/follow/?user={{auser.pk}}');">Follow</button>
+{% endif %}
+{% endif %}
+
+</h2>
+<br\><br\><br\><br\>
+
+
+<h3>Recommendation from {{ auser.username }} </h3>
+<br\>
+
+<table border="1">
+    <tr>
+        <td>Movie Name </td>
+        <td>Comment</td>
+    </tr>
+    {% for rec in recs %}
+    <tr>
+        <td>
+            <a href="/movie/detail/{{rec.item.pk}}">{{rec.item.name}}</a>
+        </td>
+        <td>
+            {{ rec.comment }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3> Some Nearest Neighbors: </h3>
+<br\>
+<table border="1">
+    {% for neighbor in neighbors %}
+    <tr><td> {{ neighbor.name }} </td></tr> 
+    {% endfor %}
+</table>
+
+<h3>Following Users </h3>
+<br\>
+<table border="1">
+    {% for followee in followees %}
+    <tr><td><a href="/movie/profile/?u={{followee.pk}}"> {{ followee.username }}</a></td></tr> 
+    {% endfor %}
+</table>
+
+{% endblock %}
+
+

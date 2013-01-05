@@ -26,6 +26,9 @@
 <form id="tags">
 <input type="checkbox" name="tag" value="sci-fi">sci-fi
 <input type="checkbox" name="tag" value="drama">drama
+<input type="checkbox" name="tag" value="fantasy">fantasy
+<input type="checkbox" name="tag" value="action">action
+<input type="checkbox" name="tag" value="thriller">thriller
 </form>
 <button id="filter_btn" onclick="reclist($('#tags').serialize());" >filter</button>
 <button id="clear_btn" onclick="reclist('');$('input:checked').removeAttr('checked');" >clear</button>

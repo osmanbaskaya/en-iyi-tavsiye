@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<br\>
+
+<h2> This is your profile page, {{ ruser.username }} </h2>
+<br\><br\><br\><br\>
+
+
+<h3>Recommendation from {{ user.username }} </h3>
+<br\>
+
+<table border="1">
+    <tr>
+        <td>Movie Name </td>
+        <td>Comment</td>
+    </tr>
+    {% for rec in recs %}
+    <tr>
+        <td>
+            <a href="/movie/detail/{{rec.item.pk}}">{{rec.item.name}}</a>
+        </td>
+        <td>
+            {{ rec.comment }}
+        </td>
+        {% endfor %}
+    </table>
+
+    <h3> Some Nearest Neighbors: </h3>
+    <br\>
+    <table border="1">
+        {% for neighbor in neighbors %}
+        <tr><td> {{ neighbor.name }} </td><td> 
+                {% endfor %}
+            </table>
+
+            <h3>Following Users </h3>
+            <br\>
+            <table border="1">
+                {% for following in followings %}
+                <tr><td> {{ following.name }} </td><td> 
+                        {% endfor %}
+                    </table>
+
+                    {% endblock %}
+
+
