@@ -6,12 +6,18 @@
 <h2><img width="75px" height="150px" src="{{auser.profile.pic_url}}"/> {{ auser.username }}
 
 {%if auser != user %}
-{%if isfollowing %}
-<button onclick="$.get('/movie/unfollow/?user={{auser.pk}}');">Unfollow</button>
-{% else %}
-<button onclick="$.get('/movie/follow/?user={{auser.pk}}');">Follow</button>
+<div id="followbutton" style="float:right;">
+    {% include "following.html" %}
+</div>
 {% endif %}
-{% endif %}
+
+<!--{%if auser != user %}-->
+<!--{%if isfollowing %}-->
+<!--<button onclick="$.get('/movie/unfollow/?user={{auser.pk}}');">Unfollow</button>-->
+<!--{% else %}-->
+<!--<button onclick="$.get('/movie/follow/?user={{auser.pk}}');">Follow</button>-->
+<!--{% endif %}-->
+<!--{% endif %}-->
 
 </h2>
 <br\><br\><br\><br\>

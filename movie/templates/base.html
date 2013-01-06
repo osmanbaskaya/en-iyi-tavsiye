@@ -73,6 +73,7 @@
                   </form>
               </ul>
               <div id="left" style="float:left;">
+                  {{log}}
                   {% block body %} 
                   {% endblock %}
               </div>
@@ -80,7 +81,7 @@
                   <table>
                       {% for u in fusers %}
                       <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a href="/movie/profile/?u={{u.pk}}">{{u.username}}</a></td>
-                          <td><button onclick="$.get('/movie/follow/?user={{u.pk}}');">Follow</button></td></tr>
+                          <td><div id="d{{u.pk}}"><button onclick="$('#d{{u.pk}}').load('/movie/follow/?user={{u.pk}}');">Follow</button></div></td></tr>
                       {% endfor %}
                   </table>
               </div>
