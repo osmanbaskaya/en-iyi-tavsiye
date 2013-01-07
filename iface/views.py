@@ -13,7 +13,7 @@ from registration.views import register
 
 def log_in(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/movie/feed_rec')
+        return HttpResponseRedirect('/movie/profile/')
 
     # Not authenticated
     if request.method == 'POST':

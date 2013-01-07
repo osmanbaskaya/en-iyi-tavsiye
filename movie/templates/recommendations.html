@@ -4,14 +4,24 @@
 <script>
     results = [
     {% for item, pre, norm in form.recs %}
-    {title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
+    {pk:{{item.pk}},title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
     {% endfor %}
     ];
     function more(){
         for(var i=0; i<5 && results.length>0; i++){
             res = results.pop();
-            $('#main').append('<tr><td>'+res.title+'</td><td>'+res.p+'</td></tr>');
+            rowstr = 
+                '<td> <a href="/movie/detail/'+res.pk+'">'+res.title+'</a>'+
+                '</td> <td> <div class="btn-group" data-toggle="buttons-radio">';
+                    for(var v=1;v<=5;v++){
+                        rowstr+=
+                    '<input name="rgroup_'+res.pk+'" type="radio"'+
+                    'onclick="rate('+res.pk+','+v+');" >'+v
+                    }
+                    rowstr+='</div></td>';
+            $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
         }
+
         if(results.length ==0) $('#more_btn').attr('disabled','');
     }
     $(function(){
@@ -37,7 +47,7 @@
 <br\><br\>
 
 
-<table id="main" border="1">
+<table id="main" >
 </table>
 <button id="more_btn" onclick="more();" >more</button>
 

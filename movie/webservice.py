@@ -97,7 +97,9 @@ class WebService(object):
             return self.get_recommendations(user_id, n)
 
     def get_nearestneighbors(self, user_id):
-        return self._client.service.getUserNearestNeighborList(self.context, user_id)
+        return self._client.service.getUserNearestNeighborList(self.context, user_id)[:10]
+        
+
 
 
 def build_whole_ISM():

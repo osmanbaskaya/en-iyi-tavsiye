@@ -6,6 +6,25 @@ context = 'movie'
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
+class Action(models.Model):
+    user = models.ForeignKey(User)
+    what = models.CharField(max_length=50)
+    when = models.DateTimeField(auto_now_add=True)
+    gen_id = models.IntegerField()
+    class Meta:
+        db_table='%s_action'%context
+
+    def stringify(self):
+        if self.what==u'rate':
+            item = Item.objects.get(pk=self.gen_id)
+            return ' rated <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
+        elif self.what ==u'follow':
+            u = User.objects.get(pk=self.gen_id)
+            return ' is now following <a href="/movie/profile/?u=%d">%s</a>'%(u.pk,u.username)
+        elif self.what=='recommend':
+            item = Item.objects.get(pk=self.gen_id)
+            return ' recommended <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
+
 class Item(models.Model):
     name = models.TextField()
 

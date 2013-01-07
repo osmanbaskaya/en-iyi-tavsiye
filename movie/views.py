@@ -10,6 +10,7 @@ from django.core.context_processors import csrf
 from django.forms.models import modelformset_factory
 import json, sys
 from movie.webservice import WebService
+from movie.utils import *
 
 #constants
 from movie.models import context
@@ -26,7 +27,7 @@ def search(request):
         except Rating.DoesNotExist:
             rows.append((item,None))
 
-    return render(request,'myratings.html',{'rlist':range(1,6),
+    return render(request,'ratings.html',{'rlist':range(1,6),
         'rows':rows})
 
 @login_required(login_url='/login/')
@@ -37,28 +38,16 @@ def reclist(request):
     reclist =[]
     for r in resp:
         sitem_id, pre = r.split(';')
-        reclist.append({'title':Item.objects.get(pk=int(sitem_id)).name,
+        reclist.append({'pk':int(sitem_id),'title':Item.objects.get(pk=int(sitem_id)).name,
             'p':round(float(pre)),'normp':0})
     reclist.reverse()
     return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
 @login_required(login_url='/login/')
-def myratings(request):
-    if request.method == "POST" and request.POST.get('submit')=='clear':
-        Rating.objects.get(pk=request.POST.get('rating_id'), user=request.user).delete()
-    ratings = Rating.objects.filter(user=request.user)
-    ratings.reverse()
-
-    rows=[]
-    for r in ratings:
-        rows.append((r.item,r))
-
-
-    c = {'user':request.user,'rlist':xrange(1,6),
-            'rows':rows,'fusers':User.objects.filter(pk__gt=6042)}
-    c.update(csrf(request))
-    return render_to_response('myratings.html', c,
-            context_instance=RequestContext(request))
+def home(request):
+    followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
+    actions = Action.objects.filter(user__in=followees).order_by('-when')
+    return render(request,'home.html',{'actions':actions,'fusers':getneighbors(request.user)})
 
 @login_required(login_url='/login/')
 def rate(request):
@@ -71,11 +60,13 @@ def rate(request):
         rating=None
     else:
         rating = Rating.objects.create(user=u,item=i,rating=r)
+        Action.objects.create(user=request.user,what='rate',
+                gen_id=i.pk)
 
     return render(request,'rating.html',{'row':(i,rating), 'rlist':range(1,6)})
 
 @login_required(login_url='/login/')
-def feed_rec(request):
+def feedrec(request):
     n=10
     unrated_items= Item.get_unrated_by(request.user)
     from random import sample, randint
@@ -83,9 +74,11 @@ def feed_rec(request):
     if k > 0:
         unrated_items = sample(unrated_items, n)
 
-    c = {'user':request.user,'rlist':xrange(1,6), 'unrated_items':unrated_items}
-    c.update(csrf(request))
-    return render_to_response('feedrec.html', c, context_instance=RequestContext(request))
+    rows=[]
+    for item in unrated_items:
+        rows.append((item,None))
+    c = {'user':request.user,'rlist':xrange(1,6), 'rows':rows}
+    return render(request,'ratings.html',c)
 
 @login_required(login_url='/login/')
 def get_rec(request):
@@ -115,6 +108,8 @@ def userrec(request):
     if request.GET.get('a') == 'rec':
         userrec=UserRec.objects.create(user=request.user,
                 item=item)
+        Action.objects.create(user=request.user,
+                what='recommend',gen_id=item.pk)
     if request.GET.get('a') == 'unrec':
         UserRec.objects.get(pk=request.GET.get('userrec')).delete()
         userrec=None
@@ -128,6 +123,8 @@ def follow(request):
     except Follow.DoesNotExist:
         f = Follow.objects.create(follower=request.user,
                 followee=User.objects.get(pk=request.GET.get('user')))
+        Action.objects.create(user=request.user,
+                what='follow',gen_id=f.followee.pk)
 
     return render(request,'following.html',{'f': f})
 
@@ -147,30 +144,27 @@ def detail(request,pk):
 
 @login_required(login_url='/login/')
 def profile(request):
-    #import movie.webservice
-    #w = movie.webservice.WebService(context)
-    #nids = w.get_nearestneighbors(request.user.id) # neighbors ids
-    #neighbors = []
-    #for n_id in nids:
-        #neighbor = User.objects.get(pk=n_id)
-        #neighbors.append(neighbor)
-    
-    neighbors = []
-    
     if request.GET.get('u'):
         user = User.objects.get(pk=request.GET.get('u'))
     else:
         user = request.user
+    ratings=Rating.objects.filter(user=user)
+    ratings.reverse()
 
+    rows=[]
+    for r in ratings:
+        rows.append((r.item,r))
+    
     followings = Follow.objects.filter(follower=user)
     followees = [f.followee for f in followings]
-    f = Follow.objects.get(follower=request.user,
-            followee=user)
-
+    try:
+        f = Follow.objects.get(follower=request.user,
+                followee=user)
+    except Follow.DoesNotExist:
+        f=Follow(follower=request.user,followee=user)
 
     recs = UserRec.objects.filter(user=user)
     return render(request, 'profile.html', {
-        'recs': recs, 'neighbors': neighbors, 'followees': followees, 
-        'auser': user,'user':request.user, 'f': f,
-        'ruser_followees': ruser_followees,
+        'recs': recs, 'followees': followees, 
+        'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
         })

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
+<div style="float:left">
 <br\>
 
 <h2><img width="75px" height="150px" src="{{auser.profile.pic_url}}"/> {{ auser.username }}
 
 {%if auser != user %}
-<div id="followbutton" style="float:right;">
+<div id="followbutton{{auser.pk}}" style="float:right;">
     {% include "following.html" %}
 </div>
 {% endif %}
@@ -43,14 +44,6 @@
     {% endfor %}
 </table>
 
-<h3> Some Nearest Neighbors: </h3>
-<br\>
-<table border="1">
-    {% for neighbor in neighbors %}
-    <tr><td> {{ neighbor.name }} </td></tr> 
-    {% endfor %}
-</table>
-
 <h3>Following Users </h3>
 <br\>
 <table border="1">
@@ -58,7 +51,30 @@
     <tr><td><a href="/movie/profile/?u={{followee.pk}}"> {{ followee.username }}</a></td></tr> 
     {% endfor %}
 </table>
-
+</div>
+<div style="margin-left:350px;">
+Number of movies : {{ rows|length }}
+<table>
+{%if auser != user %}
+    {% for row in rows %}
+    <tr>
+        <td>
+        <a href="/movie/detail/{{row.0.pk}}">{{row.0.name}}</a>
+        </td>
+        <td>
+            {{row.1.rating}}
+        </td>
+    </tr>
+    {% endfor %}
+{%else%}
+    {% for row in rows %}
+    <tr id="row{{row.0.pk}}">
+        {% include "rating.html" %}
+    </tr>
+    {% endfor %}
+{%endif%}
+</table>
+</div>
 {% endblock %}
 
 

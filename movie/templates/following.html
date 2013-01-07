@@ -1,1 +1,1 @@
-<button onclick="$('#followbutton').load('/movie/follow/?user={{f.followee_id}}');">{% if f %}Unfollow{%else%}Follow{%endif%}</button>
+<button onclick="$('#followbutton{{f.followee_id}}').load('/movie/follow/?user={{f.followee_id}}');">{% if f.pk %}Unfollow{%else%}Follow{%endif%}</button>
