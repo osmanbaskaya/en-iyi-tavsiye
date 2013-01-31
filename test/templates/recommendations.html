@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
+{% if not reclist|length %}
+<p> You need to rate more than {{limit}} items to get recommendations.</p>
+<p> Please rate {{limit - rcount}} more items.</p>
+{% else %}
 <script>
     results = [
-    {% for item, pre, norm in form.recs %}
+    {% for item, pre, norm in reclist %}
     {pk:{{item.pk}},title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
     {% endfor %}
     ];
@@ -50,8 +54,5 @@
 <table id="main" >
 </table>
 <button id="more_btn" onclick="more();" >more</button>
-
-
+{% endif %}
 {% endblock %}
-
-

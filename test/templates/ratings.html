@@ -2,14 +2,6 @@
 {% block body %}
 </br>
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
-<script>
-    function rate(item_id,rating){
-        $('input[name="rgroup_'+item_id+'"]').attr("disabled",true);
-        if(rating<0)
-            $('#a'+item_id).attr("href","#");
-        $('#row'+item_id).load('/movie/rate/?item_id='+item_id+'&rating='+rating);
-    }
-</script>
 
 Number of movies : {{ rows|length }}
 <table>

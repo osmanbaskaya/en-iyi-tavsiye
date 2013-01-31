@@ -28,7 +28,7 @@ def log_in(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/movie/myratings/')
+                return HttpResponseRedirect('/movie/profile/')
             else:
                 return render_to_response('login.html', {'error_message': 
                                                     'blocked account'})

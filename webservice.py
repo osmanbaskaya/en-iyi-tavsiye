@@ -66,9 +66,9 @@ class WebService(object):
     def test(self):
         self._client.service.test()
 
-    def get_recs(self, user, tags='', offset=0, limit=100):
+    def get_recs(self, user_id, tags='', offset=0, limit=100):
         return self._client.service.getRecommendationListPaginated(self.context,
-                user.pk,
+                user_id,
                 tags,
                 offset,
                 limit)

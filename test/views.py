@@ -80,18 +80,20 @@ def feedrec(request):
 
 @login_required(login_url='/login/')
 def get_rec(request):
-    w = WebService(context)
-    resp = w.get_recs(request.user.pk)
     reclist =[]
-    for r in resp:
-        sitem_id, pre = r.split(';')
-        reclist.append((Item.objects.get(pk=int(sitem_id)),
-            round(float(pre)),0))
-    form = RecommendationForm()
-    reclist.reverse()
-    form.recs = reclist
+    limit = 1000
+    rcount = Rating.objects.filter(user=request.user).count()
+    if  rcount > limit:
+        w = WebService(context)
+        resp = w.get_recs(request.user.pk)
+        for r in resp:
+            sitem_id, pre = r.split(';')
+            reclist.append((Item.objects.get(pk=int(sitem_id)),
+                round(float(pre)),0))
+        reclist.reverse()
     return render(request, 'recommendations.html', {
-        'context':context,'form': form, 'user': request.user,'tags':['war'],
+        'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
+        'limit':limit,'rcount':rcount,
         })
 @login_required(login_url='/login/')
 def train(request):

@@ -142,6 +142,7 @@ INSTALLED_APPS = (
     'iface',
     'movie',
     'book',
+    'test',
 )
     
 ACCOUNT_ACTIVATION_DAYS = 7
