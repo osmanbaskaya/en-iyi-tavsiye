@@ -1,0 +1,19 @@
+{% extends context|add:"/base.html" %}
+{% block body %}
+</br>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
+<p>osmancan</p>
+
+Number of movies : {{ rows|length }}
+<table>
+{% for row in rows %}
+<tr id="row{{row.0.pk}}">
+    {% include context|add:"/rating.html" %}
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
+
+
+  <!--
+  -->

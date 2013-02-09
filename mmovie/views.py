@@ -93,7 +93,7 @@ def get_rec(request):
         reclist.reverse()
     return render(request, context + '/recommendations.html', {
         'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
-        'limit':limit,'diff':limit-rcount,
+        'limit':limit,'rcount':rcount,
         })
 
 
