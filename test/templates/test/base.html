@@ -68,9 +68,12 @@
         });
         function rate(e){
             var i = e.getAttribute('data-item')
+            var r = e.getAttribute('data-n')
             q ='div[data-item="'+i+'"]' 
             $(q).block({message:null,overlayCSS:{border:'1px solid #f00',backgroundColor: '#d3d3d3', opacity:0.6, cursor:'wait'}});
-            setTimeout('$(q).unblock();',2000);
+            $.get('/{{context}}/rate/?item_id='+i+'&rating='+r, function(data) {
+                $(q).unblock();
+            });
             console.log(
             );
             console.log(e.getAttribute('data-n'));
