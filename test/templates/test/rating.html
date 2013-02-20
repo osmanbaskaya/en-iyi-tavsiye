@@ -1,0 +1,11 @@
+<td>
+<a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
+</td>
+<td>
+<div style="max-width:120px;padding:3px 3px 3px 3px" data-item="{{row.0.pk}}">
+{%for v in rlist %}
+<img {%if row.1 and row.1.rating <= v %}class="yellow-star rating"{% else %}class="gray-star rating"{% endif %}
+data-n="{{v}}" data-item="{{row.0.pk}}" onclick="rate(this);" src="{{STATIC_URL}}img/transparent.png">
+{% endfor %}
+<img {%if not row.1 %}style="display:none"{% endif %} class="delete-btn"  data-n="-1" data-item="{{row.0.pk}}" onclick="rate(this);" src="{{STATIC_URL}}img/transparent.png">
+</div>

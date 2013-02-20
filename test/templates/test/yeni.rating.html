@@ -1,0 +1,15 @@
+<td>
+<a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
+</td>
+<td>
+<div class="btn-group" data-toggle="buttons-radio">
+    {%for v in rlist %}
+    <input class="star required" name="rgroup_{{row.0.pk}}" {%if row.1 and row.1.rating == v %}checked{%endif%} type="radio"
+    onclick="console.log(5);" title="asdf" value="{{row.0.pk}},{{v}}" >  {% endfor %}
+</div>
+</td>
+{% if row.1 %}
+<td>
+    <a id="a{{row.0.pk}}" onclick="rate({{row.0.pk}},-1);">clear</a>
+</td>
+{% endif %}

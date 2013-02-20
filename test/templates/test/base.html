@@ -1,0 +1,135 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>En iyi Tavsiye</title>
+
+        <!-- Le styles -->
+        <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
+        <link href="{{ STATIC_URL }}css/mystyle.css" rel="stylesheet"/>
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/jquery.blockUI.js"></script>
+        <script>
+            $(document).ready(function() {
+            function turnyellow(i,s){
+                turngray(i);
+                for(j=1;j<=s;j++){
+                    var q = 'img.rating[data-item="'+i+'"][data-n="'+j+'"]';
+                    //console.log(q);
+                    $(q).attr('class','yellow-star rating');
+                }
+            }
+            function turngray(i){
+                $('img.rating[data-item="'+i+'"]').attr('class','gray-star rating');
+            }
+            function imghover(img){
+                var i = img.attr('data-item');
+                var s = img.attr('data-n');
+                turnyellow(i,s);
+            }
+            function imgclick(img){
+                var i = img.attr('data-item');
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                $(q).removeAttr('data-selected');
+                img.attr('data-selected','true');
+                var q = 'img.delete-btn[data-item="'+i+'"]';
+                $(q).show();
+
+            }
+            function imgmouseout(img){
+                var i = img.attr('data-item');
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                if($(q).length == 1){
+                    var s = $(q).attr('data-n');
+                    turnyellow(i,s);
+                } else{
+                    turngray(i);
+                }
+                 
+            }
+            $('img.rating').hover(function(){imghover($(this));});
+            $('img.rating').click(function(){imgclick($(this));});
+            $('img.rating').mouseout(function(){imgmouseout($(this));});
+            $('img.delete-btn').click(function(){
+                var i = $(this).attr('data-item');
+                //console.log($(this));
+                $(this).hide();
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                $(q).removeAttr('data-selected');
+                turngray(i);
+            });
+        });
+        function rate(e){
+            var i = e.getAttribute('data-item')
+            q ='div[data-item="'+i+'"]' 
+            $(q).block({message:null,overlayCSS:{border:'1px solid #f00',backgroundColor: '#d3d3d3', opacity:0.6, cursor:'wait'}});
+            setTimeout('$(q).unblock();',2000);
+            console.log(
+            );
+            console.log(e.getAttribute('data-n'));
+            console.log("rate executed.");
+        }
+        </script>
+
+
+
+          <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
+          <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-tooltip.js"></script>
+          <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-popover.js"></script>
+          <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+          <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <![endif]-->
+
+          <!-- Le fav and touch icons -->
+          <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
+      </head>
+
+      <body>
+          <div class="navbar navbar-fixed-top">
+              <div class="navbar-inner">
+                  <div class="container">
+                      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                          <!--<a class="brand" href="/"><img src="{{STATIC_URL}}img/logo.png"></a>-->
+                          <!--<span class="icon-bar"></span>-->
+                      </a>
+                      <a class="brand" href="#"></a>
+                      <div class="nav-collapse">
+                          <ul class="nav">
+
+                              <li class="active"><a href="/{{ context }}/profile">{{user.username}}</a></li>
+                              <li><a href="/{{ context }}/home">{% trans "Home" %}</a></li>
+                              <li><a href="/{{ context }}/feedrec">{% trans "Feed" %}</a></li>
+                              <li><a href="/{{ context }}/get_rec">{% trans "Get Recommendations" %}</a></li>
+                              <li><a href="/{{ context }}/train">{% trans "Train" %}</a></li>
+                              <li><a href="/logout/">{% trans "Logout" %}</a></li>
+                          </ul>
+                      </div><!--/.nav-collapse -->
+                  </div>
+              </div>
+          </div>
+          <div class="container">
+              <ul class="nav nav-tabs">
+                  <li {% if context == 'movie' %}class="active"{% endif %}> <a href="/movie/home">Movie</a> </li>
+                  <li {% if context == 'test' %}class="active"{% endif %}><a href="/test/home">Test</a></li>
+                  <!--<li><a href="/music/home">Music</a></li>-->
+                  <form style="float:right" id="search_form" action="/{{ context }}/search/" class="navbar-search pull-right">
+                      <input type="text" name="q" class="search-query" placeholder="Search"/>
+                  </form>
+              </ul>
+              <div id="content">
+                  {{log}}
+                  {% block body %} 
+                  {% endblock %}
+              </div>
+          </div> <!-- /container -->
+      </body>
+  </html>
+

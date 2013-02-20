@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="jquery.blockUI.js"></script>
+        <link rel="stylesheet" type="text/css" href="mystyle.css">
+    </head>
+        <script>
+            $(document).ready(function() {
+            function turnyellow(i,s){
+                turngray(i);
+                for(j=1;j<=s;j++){
+                    var q = 'img.rating[data-item="'+i+'"][data-n="'+j+'"]';
+                    //console.log(q);
+                    $(q).attr('class','yellow-star rating');
+                }
+            }
+            function turngray(i){
+                $('img.rating[data-item="'+i+'"]').attr('class','gray-star rating');
+            }
+            function imghover(img){
+                var i = img.attr('data-item');
+                var s = img.attr('data-n');
+                turnyellow(i,s);
+            }
+            function imgclick(img){
+                var i = img.attr('data-item');
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                $(q).removeAttr('data-selected');
+                img.attr('data-selected','true');
+                var q = 'img.delete-btn[data-item="'+i+'"]';
+                $(q).show();
+
+            }
+            function imgmouseout(img){
+                var i = img.attr('data-item');
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                if($(q).length == 1){
+                    var s = $(q).attr('data-n');
+                    turnyellow(i,s);
+                } else{
+                    turngray(i);
+                }
+                 
+            }
+            $('img.rating').hover(function(){imghover($(this));});
+            $('img.rating').click(function(){imgclick($(this));});
+            $('img.rating').mouseout(function(){imgmouseout($(this));});
+            $('img.delete-btn').click(function(){
+                var i = $(this).attr('data-item');
+                //console.log($(this));
+                $(this).hide();
+                var q = 'img.rating[data-item="'+i+'"][data-selected]';
+                $(q).removeAttr('data-selected');
+                turngray(i);
+            });
+        });
+        function rate(e){
+            var i = e.getAttribute('data-item')
+            q ='div[data-item="'+i+'"]' 
+            $(q).block({message:null,overlayCSS:{border:'1px solid #f00',backgroundColor: '#d3d3d3', opacity:0.6, cursor:'wait'}});
+            setTimeout('$(q).unblock();',2000);
+            console.log(
+            );
+            console.log(e.getAttribute('data-n'));
+            console.log("rate executed.");
+        }
+        </script>
+    <body>
+        <div style="max-width:120px;padding:3px 3px 3px 3px" data-item="666">
+            <img class="gray-star rating" data-n="1" data-item="666" onclick="rate(this);" src="transparent.png">
+            <img class="gray-star rating" data-n="2" data-item="666" onclick="rate(this);" src="transparent.png" >
+            <img class="gray-star rating" data-n="3" data-item="666" onclick="rate(this);" src="transparent.png" >
+            <img class="gray-star rating" data-n="4" data-item="666" onclick="rate(this);" src="transparent.png" >
+            <img class="gray-star rating" data-n="5" data-item="666" onclick="rate(this);" src="transparent.png" >
+            <img style="display:none" class="delete-btn"  data-n="-1" data-item="666" onclick="rate(this);" src="transparent.png">
+        </div>
+    </body>
+</html>
