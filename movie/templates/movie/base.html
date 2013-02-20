@@ -7,6 +7,7 @@
 
         <!-- Le styles -->
         <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
+        <link href="{{ STATIC_URL }}css/jquery.rating.css" rel="stylesheet"/>
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -14,6 +15,7 @@
         </style>
         <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/jquery.rating.pack.js"></script>
         <script>
                 function rate(item_id,rating){
                     $('input[name="rgroup_'+item_id+'"]').attr("disabled",true);
@@ -54,6 +56,7 @@
                               <li><a href="/{{ context }}/feedrec">{% trans "Feed" %}</a></li>
                               <li><a href="/{{ context }}/get_rec">{% trans "Get Recommendations" %}</a></li>
                               <li><a href="/{{ context }}/train">{% trans "Train" %}</a></li>
+                              <li><a href="/{{ context }}/fetch">{% trans "Fetch" %}</a></li>
                               <li><a href="/logout/">{% trans "Logout" %}</a></li>
                           </ul>
                       </div><!--/.nav-collapse -->

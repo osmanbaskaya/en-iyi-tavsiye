@@ -4,7 +4,7 @@
 <td>
 <div class="btn-group" data-toggle="buttons-radio">
     {%for v in rlist %}
-    <input name="rgroup_{{row.0.pk}}" {%if row.1 and row.1.rating == v %}checked{%endif%} type="radio"
+    <input class="star" name="rgroup_{{row.0.pk}}" {%if row.1 and row.1.rating == v %}checked{%endif%} type="radio"
     onclick="rate({{row.0.pk}},{{v}});" > {{v}} {% endfor %}
 </div>
 </td>

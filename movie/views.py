@@ -25,7 +25,7 @@ def search(request):
             rows.append((item,r))
         except Rating.DoesNotExist:
             rows.append((item,None))
-    return render(request,'ratings.html',{'context':context,'rlist':range(1,6),
+    return render(request, context + '/ratings.html',{'context':context,'rlist':range(1,6),
         'rows':rows})
 
 @login_required(login_url='/login/')
@@ -45,7 +45,7 @@ def reclist(request):
 def home(request):
     followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
     actions = Action.objects.filter(user__in=followees).order_by('-when')
-    return render(request,'home.html',{'context':context,'actions':actions,'fusers':getneighbors(request.user)})
+    return render(request, context + '/home.html',{'context':context,'actions':actions,'fusers':getneighbors(request.user)})
 
 @login_required(login_url='/login/')
 def rate(request):
@@ -61,7 +61,7 @@ def rate(request):
         Action.objects.create(user=request.user,what='rate',
                 gen_id=i.pk)
 
-    return render(request,'rating.html',{'context':context,'row':(i,rating), 'rlist':range(1,6)})
+    return render(request,context + '/rating.html',{'context':context,'row':(i,rating), 'rlist':range(1,6)})
 
 @login_required(login_url='/login/')
 def feedrec(request):
@@ -76,27 +76,37 @@ def feedrec(request):
     for item in unrated_items:
         rows.append((item,None))
     c = {'context':context,'user':request.user,'rlist':xrange(1,6), 'rows':rows}
-    return render(request,'ratings.html',c)
+    return render(request, context + '/ratings.html',c)
 
 @login_required(login_url='/login/')
 def get_rec(request):
-    w = WebService(context)
-    resp = w.get_recs(request.user.pk)
     reclist =[]
-    for r in resp:
-        sitem_id, pre = r.split(';')
-        reclist.append((Item.objects.get(pk=int(sitem_id)),
-            round(float(pre)),0))
-    form = RecommendationForm()
-    reclist.reverse()
-    form.recs = reclist
-    return render(request, 'recommendations.html', {
-        'context':context,'form': form, 'user': request.user,'tags':['war'],
+    limit = 10
+    rcount = Rating.objects.filter(user=request.user).count()
+    if  rcount > limit:
+        w = WebService(context)
+        resp = w.get_recs(request.user.pk)
+        for r in resp:
+            sitem_id, pre = r.split(';')
+            reclist.append((Item.objects.get(pk=int(sitem_id)),
+                round(float(pre)),0))
+        reclist.reverse()
+    return render(request, context + '/recommendations.html', {
+        'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
+        'limit':limit,'diff':limit-rcount,
         })
+
+
 @login_required(login_url='/login/')
 def train(request):
     w = WebService(context)
     w.train_model()
+    return home(request)
+
+@login_required(login_url='/login/')
+def fetch(request):
+    w = WebService(context)
+    w.fetch_model()
     return home(request)
 
 
@@ -110,7 +120,7 @@ def userrec(request):
     if request.GET.get('a') == 'unrec':
         UserRec.objects.get(pk=request.GET.get('userrec')).delete()
         userrec=None
-    return render(request,'userrec.html',{'context':context,'item':item,'userrec':userrec})
+    return render(request, context + '/userrec.html',{'context':context,'item':item,'userrec':userrec})
 
 def follow(request):
     try:
@@ -123,7 +133,7 @@ def follow(request):
         Action.objects.create(user=request.user,
                 what='follow',gen_id=f.followee.pk)
 
-    return render(request,'following.html',{'context':context,'f': f})
+    return render(request,context + '/following.html',{'context':context,'f': f})
 
 
 def detail(request,pk):
@@ -136,7 +146,7 @@ def detail(request,pk):
     else:
         userrec=None
 
-    return render(request,'item.html',{
+    return render(request,context + '/item.html',{
         'status':str(res),'item':item,'userrec':userrec})
 
 @login_required(login_url='/login/')
@@ -161,7 +171,7 @@ def profile(request):
         f=Follow(follower=request.user,followee=user)
 
     recs = UserRec.objects.filter(user=user)
-    return render(request, 'profile.html', {
+    return render(request, context + '/profile.html', {
         'context':context,'recs': recs, 'followees': followees, 
         'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
         })

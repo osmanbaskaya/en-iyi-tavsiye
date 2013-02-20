@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends context|add:"/base.html" %}
 
 {% block body %}
 <div style="float:left">
@@ -8,17 +8,9 @@
 
 {%if auser != user %}
 <div id="followbutton{{auser.pk}}" style="float:right;">
-    {% include "following.html" %}
+    {% include context|add:"/following.html" %}
 </div>
 {% endif %}
-
-<!--{%if auser != user %}-->
-<!--{%if isfollowing %}-->
-<!--<button onclick="$.get('/{{ context }}/unfollow/?user={{auser.pk}}');">Unfollow</button>-->
-<!--{% else %}-->
-<!--<button onclick="$.get('/{{ context }}/follow/?user={{auser.pk}}');">Follow</button>-->
-<!--{% endif %}-->
-<!--{% endif %}-->
 
 </h2>
 <br\><br\><br\><br\>
@@ -69,7 +61,7 @@ Number of movies : {{ rows|length }}
 {%else%}
     {% for row in rows %}
     <tr id="row{{row.0.pk}}">
-        {% include "rating.html" %}
+        {% include context|add:"/rating.html" %}
     </tr>
     {% endfor %}
 {%endif%}

@@ -63,6 +63,15 @@ class WebService(object):
             self.connect()
             self.train_model()
 
+    def fetch_model(self):
+        if self.isConnected():
+            print 'Building...'
+            self._client.service.fetchData(self.context)
+            print '%s has been fetched successfully' % self.context
+        else:
+            self.connect()
+            self.fetch_model()
+
     def test(self):
         self._client.service.test()
 
