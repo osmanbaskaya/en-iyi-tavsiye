@@ -52,11 +52,10 @@ def rate(request):
     u = request.user
     i = Item.objects.get(pk=request.GET.get('item_id'))
     r = int(request.GET.get('rating'))
-    if r<0:
-        rating = Rating.objects.filter(user=u,item=i)
-        rating.delete()
-        rating=None
-    else:
+    rating = Rating.objects.filter(user=u,item=i)
+    rating.delete()
+    rating=None
+    if r>0:
         rating = Rating.objects.create(user=u,item=i,rating=r)
         Action.objects.create(user=request.user,what='rate',
                 gen_id=i.pk)

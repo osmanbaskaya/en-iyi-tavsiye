@@ -17,7 +17,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/jquery.blockUI.js"></script>
         <script>
-            $(document).ready(function() {
+            //$(function() {
             function turnyellow(i,s){
                 turngray(i);
                 for(j=1;j<=s;j++){
@@ -29,22 +29,24 @@
             function turngray(i){
                 $('img.rating[data-item="'+i+'"]').attr('class','gray-star rating');
             }
-            function imghover(img){
-                var i = img.attr('data-item');
-                var s = img.attr('data-n');
-                turnyellow(i,s);
+            function imghover(e){
+                var i = e.getAttribute('data-item')
+                var r = e.getAttribute('data-n')
+                turnyellow(i,r);
             }
-            function imgclick(img){
-                var i = img.attr('data-item');
+            function imgclick(e){
+                var i = e.getAttribute('data-item')
                 var q = 'img.rating[data-item="'+i+'"][data-selected]';
                 $(q).removeAttr('data-selected');
-                img.attr('data-selected','true');
+                e.setAttribute('data-selected','true');
                 var q = 'img.delete-btn[data-item="'+i+'"]';
                 $(q).show();
+                rate(e);
 
             }
-            function imgmouseout(img){
-                var i = img.attr('data-item');
+            function imgmouseout(e){
+                var i = e.getAttribute('data-item')
+                var r = e.getAttribute('data-n')
                 var q = 'img.rating[data-item="'+i+'"][data-selected]';
                 if($(q).length == 1){
                     var s = $(q).attr('data-n');
@@ -54,18 +56,19 @@
                 }
                  
             }
-            $('img.rating').hover(function(){imghover($(this));});
-            $('img.rating').click(function(){imgclick($(this));});
-            $('img.rating').mouseout(function(){imgmouseout($(this));});
-            $('img.delete-btn').click(function(){
-                var i = $(this).attr('data-item');
+            //$('img.rating').hover(function(){imghover($(this));});
+            //$('img.rating').click(function(){imgclick($(this));});
+            //$('img.rating').mouseout(function(){imgmouseout($(this));});
+            function imgdelclick(e){
+                var i = e.getAttribute('data-item')
                 //console.log($(this));
-                $(this).hide();
+                $('img.delete-btn[data-item="'+i+'"]').hide();
                 var q = 'img.rating[data-item="'+i+'"][data-selected]';
                 $(q).removeAttr('data-selected');
                 turngray(i);
-            });
-        });
+                rate(e)
+            }
+            //});
         function rate(e){
             var i = e.getAttribute('data-item')
             var r = e.getAttribute('data-n')
