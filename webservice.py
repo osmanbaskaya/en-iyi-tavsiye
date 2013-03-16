@@ -57,7 +57,8 @@ class WebService(object):
     def train_model(self):
         if self.isConnected():
             print 'Building...'
-            self._client.service.buildModel(self.context)
+            self.fetch_model()
+            self._client.service.buildModel(self.context,'',10,10)
             print '%s has been built successfully' % self.context
         else:
             self.connect()
@@ -81,6 +82,27 @@ class WebService(object):
                 tags,
                 offset,
                 limit)
+
+    def add_pref(self, user_id, item_id, rating):
+        self._client.service.addPreference(self.context,
+                user_id,
+                item_id,
+                rating)
+
+
+    def remove_pref(self, user_id, item_id, rating=0):
+        self._client.service.removePreference(self.context,
+                user_id,
+                item_id,
+                rating)
+
+
+    def change_pref(self, user_id, item_id, rating):
+        
+        self.remove_pref(self, user_id, item_id)
+        self.add_pref(self, user_id, item_id, rating)
+
+
 
     def get_recommendations(self, user_id, n=100):
 

@@ -59,6 +59,9 @@ def rate(request):
         rating = Rating.objects.create(user=u,item=i,rating=r)
         Action.objects.create(user=request.user,what='rate',
                 gen_id=i.pk)
+        w = WebService(context)
+        w.add_pref(u.id, i.id, r)
+
 
     return render(request,context + '/rating.html',{'context':context,'row':(i,rating), 'rlist':range(1,6)})
 
@@ -141,6 +144,7 @@ def detail(request,pk):
 
     return render(request,context + '/item.html',{
         'status':str(res),'item':item,'userrec':userrec})
+    #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')
 def profile(request):

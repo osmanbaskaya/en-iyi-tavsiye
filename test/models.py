@@ -5,6 +5,10 @@ import os
 
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
+
+back_2_fut = "http://goo.gl/xPV6y"
+
+
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 class Action(models.Model):
@@ -18,10 +22,10 @@ class Action(models.Model):
     def stringify(self):
         if self.what==u'rate':
             item = Item.objects.get(pk=self.gen_id)
-            return ' rated <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
+            return ' rated <a href="/movie/detail/%d/">%s</a> <img src=%s width=50 height="50">'%(item.pk,item.name, back_2_fut)
         elif self.what ==u'follow':
             u = User.objects.get(pk=self.gen_id)
-            return ' is now following <a href="/movie/profile/?u=%d">%s</a>'%(u.pk,u.username)
+            return ' is now following <a href="/movie/profile/?u=%d">%s</a> <img src="%s" width=50 height="50">' %(u.pk,u.username,u.profile.pic_url)
         elif self.what=='recommend':
             item = Item.objects.get(pk=self.gen_id)
             return ' recommended <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)

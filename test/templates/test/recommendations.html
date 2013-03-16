@@ -14,6 +14,7 @@
     function more(){
         for(var i=0; i<5 && results.length>0; i++){
             res = results.pop();
+            /*
             rowstr = 
                 '<td> <a href="/{{ context }}/detail/'+res.pk+'">'+res.title+'</a>'+
                 '</td> <td> <div class="btn-group" data-toggle="buttons-radio">';
@@ -23,6 +24,15 @@
                     'onclick="rate('+res.pk+','+v+');" >'+v
                     }
                     rowstr+='</div></td>';
+            */
+            rowstr = '<td> <a href="/{{context}}/detail/'+res.pk+'">'+res.title+'</a> </td>'+
+            '<td> <div style="cursor:default;max-width:120px;padding:3px 3px 3px 3px" data-item="'+res.pk+'">';
+            for(var v=1;v<=5;v++){
+                rowstr +=
+                '<img class="gray-star rating" data-n="'+v+'" data-item="'+res.pk+'" onmouseover="imghover(this);" onmouseout="imgmouseout(this);" onclick="imgclick(this);" src="/static/img/transparent.png">';
+            }
+            rowstr+=
+            '<img style="display:none" class="delete-btn" data-n="-1" data-item="'+res.pk+'" src="/static/img/transparent.png" onclick="imgdelclick(this);"> </div></td>';
             $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
         }
 

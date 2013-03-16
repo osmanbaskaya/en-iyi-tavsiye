@@ -3,7 +3,8 @@
 {% block body %}
 <div style="float:left">
 {% for act in actions %}
-<p><img width="50" height="50" src="{{act.user.profile.pic_url}}"><span style="margin-left:5px"><a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a> {{act.stringify|safe}} <span style="color:#999">{{act.when|dthumanize}}</span></span></p>
+<p><img width="50" height="50" src="{{act.user.profile.pic_url}}"><span style="margin-left:5px"><a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a> {{act.stringify|safe}}
+<span style="color:#999">{{act.when|dthumanize}}</span></span></p>
 {% endfor %}
 </div>
 {%if fusers %}

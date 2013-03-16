@@ -89,6 +89,7 @@
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-tooltip.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-popover.js"></script>
+          <!--<script type="text/javascript" src="{{ STATIC_URL }}klaas/jquery.popover-1.1.2.js"></script>-->
           <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
           <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -122,6 +123,7 @@
               </div>
           </div>
           <div class="container">
+            <div onmouseout="$('#thepopup').hide();" onmouseover="$('#thepopup').show();" id="thepopup" class="popover fade right in" style="top: 0px; left: 0px; display: none;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title">A Title</h3><div class="popover-content"><p>And heres some amazing content. Its very engaging. right?</p></div></div></div>
               <ul class="nav nav-tabs">
                   <li {% if context == 'movie' %}class="active"{% endif %}> <a href="/movie/home">Movie</a> </li>
                   <li {% if context == 'test' %}class="active"{% endif %}><a href="/test/home">Test</a></li>
