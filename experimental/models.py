@@ -6,9 +6,6 @@ import os
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
 
-back_2_fut = "http://goo.gl/xPV6y"
-
-
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 class Action(models.Model):
@@ -36,7 +33,7 @@ class Item(models.Model):
     #additional fields: isbn,author, director
 
     year = models.IntegerField('date published', null=True)
-    img = models.CharField(max_length=250,default=back_2_fut)
+    img = models.CharField(max_length=250,default="http://goo.gl/xPV6y")
 
     @staticmethod
     def get_rated_by(user):

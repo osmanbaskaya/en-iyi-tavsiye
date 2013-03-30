@@ -9,12 +9,27 @@ from django.forms.formsets import formset_factory
 from django.core.context_processors import csrf
 from django.forms.models import modelformset_factory
 import json, sys
+from django.core.serializers.json import DjangoJSONEncoder
 from webservice import WebService
 
 #constants
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
 
+@login_required(login_url='/login/')
+def user_popover(request):
+    user_id = request.GET.get('user')
+    user = User.objects.get(pk=user_id)
+    import random
+    sim_perc = random.randint(0,100)
+    try:
+        f = Follow.objects.get(follower=request.user,
+                followee=user)
+    except Follow.DoesNotExist:
+        f=Follow(follower=request.user,followee=user)
+
+    return render(request, context + '/user_popover.html',
+            {'context':context,'user':user,'sim_perc':sim_perc,'f':f})
 @login_required(login_url='/login/')
 def search(request):
     items = Item.objects.filter( name__icontains=request.GET.get('q'))[0:20]
@@ -42,9 +57,45 @@ def reclist(request):
     return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
 @login_required(login_url='/login/')
-def home(request):
+def _home_more(request):
+    offset = int(request.GET.get('offset'))
+    limit = 10
     followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
-    actions = Action.objects.filter(user__in=followees).order_by('-when')
+    actions = Action.objects.filter(user__in=followees).order_by('-when')[offset:offset+limit]
+    tuples = []
+    for ac in actions:
+        r = {}
+        r['act'] = {'what': ac.what, 'when': str(ac.when), 'username': ac.user.username, 'pk': ac.user.pk, 'pic_url': ac.user.profile.pic_url}
+        if ac.what == 'follow':
+            user = User.objects.get(pk=ac.gen_id) 
+            r['user'] = {'pk': user.pk, 'username': user.username, 'pic_url': str(user.profile.pic_url)}
+            items = Item.objects.filter()[:5]
+            r['items'] = [(item.pk, item.name, item.year) for item in items]
+        elif ac.what == 'rate':
+            item = Item.objects.get(pk=ac.gen_id)
+            r['item'] = {'pk': item.pk, 'year': item.year, 'name': item.name, 'rating':Rating.objects.get(user=ac.user,item=item).rating, 'pre':3}
+        elif ac.what == 'recommend':
+            item = Item.objects.get(pk=ac.gen_id)
+            r['item'] = {'pk': item.pk, 'name': item.name, 'year': item.year}
+
+        tuples.append(r)
+
+
+
+    return HttpResponse(json.dumps(tuples), mimetype="application/json")
+    #return HttpResponse(json.dumps(tuples) )
+    a = [{'act': {'user': ac.user.username}, 'obj':2}, {'act': 7, 'obj': 4}]
+    a = [{'act': tuples, 'obj':2}, {'act': 7, 'obj': 4}]
+
+    return HttpResponse(json.dumps(a), mimetype="application/json")
+    #return HttpResponse("Offset is " + str(tuples))
+
+@login_required(login_url='/login/')
+def home(request):
+    offset = int(request.GET.get('offset',0))
+    limit = 2
+    followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
+    actions = Action.objects.filter(user__in=followees).order_by('-when')[offset:limit]
     tuples = []
     for ac in actions:
         if ac.what == 'follow':
@@ -52,13 +103,37 @@ def home(request):
                 {'user':User.objects.get(pk=ac.gen_id),'items':Item.objects.filter()[:5]}
                 ))
         elif ac.what == 'rate':
+            item = Item.objects.get(pk=ac.gen_id)
             tuples.append((ac,
-                {'item':Item.objects.get(pk=ac.gen_id),'pre':3}
+                {'item': item,'rating':Rating.objects.get(user=ac.user,item=item).rating,'pre':3}
                 ))
         elif ac.what == 'recommend':
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
-    return render(request, context + '/home.html',{'context':context,'tuples':tuples,'fusers':getneighbors(request.user)})
+    return render(request, context + '/home_orig.html',{'context':context,'tuples':tuples, 'noffset':limit+offset,'fusers':getneighbors(request.user)})
+
+@login_required(login_url='/login/')
+def home_more(request):
+    offset = int(request.GET.get('offset',0))
+    limit = 2
+    followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
+    actions = Action.objects.filter(user__in=followees).order_by('-when')[offset:offset+limit]
+    tuples = []
+    for ac in actions:
+        if ac.what == 'follow':
+            tuples.append((ac,
+                {'user':User.objects.get(pk=ac.gen_id),'items':Item.objects.filter()[:5]}
+                ))
+        elif ac.what == 'rate':
+            item = Item.objects.get(pk=ac.gen_id)
+            tuples.append((ac,
+                {'item': item,'rating':Rating.objects.get(user=ac.user,item=item).rating,'pre':3}
+                ))
+        elif ac.what == 'recommend':
+            tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
+
+    return render(request, context + '/home_more.html',{'context':context,'tuples':tuples, 'noffset':limit+offset})
+
 
 @login_required(login_url='/login/')
 def rate(request):
@@ -66,8 +141,11 @@ def rate(request):
     i = Item.objects.get(pk=request.GET.get('item_id'))
     r = int(request.GET.get('rating'))
     rating = Rating.objects.filter(user=u,item=i)
-    rating.delete()
-    rating=None
+    if r < 0:
+        Action.objects.filter(user=u,what='rate',gen_id=i.pk).delete()
+        rating.delete()
+        rating=None
+
     if r>0:
         rating = Rating.objects.create(user=u,item=i,rating=r)
         Action.objects.create(user=request.user,what='rate',
@@ -191,6 +269,7 @@ def profile(request):
 
 
 def getneighbors(user):
+    return User.objects.filter()[:5]
     w = WebService(context)
     strarr = w.get_nearestneighbors(user.id)
     uids = [int(s.split(';')[0]) for s in strarr]

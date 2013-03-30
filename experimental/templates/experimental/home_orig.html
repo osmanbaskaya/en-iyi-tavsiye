@@ -1,0 +1,28 @@
+{% extends context|add:"/base.html" %}
+{% load extras %}
+{% block body %}
+<div id="feed" style="float:left;max-width:50%;">
+{% include context|add:"/home_more.html" %}
+<script>
+    function homemore(b,noffset){
+        $(b).addClass('disabled');
+        $(b).attr('disabled','disabled');
+        $(b).html('loading...');
+        $.get('{{context}}/home/more/?offset='+noffset,function(res){
+            $('#feed').append(res);
+            $(b).remove();
+        });
+    }
+</script>
+</div>
+{%if fusers %}
+<div id="right" style="float:right">
+<table>
+  {% for u in fusers %}
+  <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ u.username }}</a></td>
+      </tr>
+  {% endfor %}
+</table>
+</div>
+{%endif%}
+{% endblock %}

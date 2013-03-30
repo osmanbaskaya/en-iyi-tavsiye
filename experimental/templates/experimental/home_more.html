@@ -1,0 +1,45 @@
+{% load extras %}
+{% for act, obj in tuples %}
+<div style="min-height:110px;">
+<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>
+<div style="padding-left:1.5cm;">
+    <hr style="margin-bottom:0.1cm;"/>
+        {% if act.what == 'rate' %}
+        <span style="font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        rated {{ obj.rating }} <span style="float:right;">pre for you: {{ obj.pre }}
+        <span style="color:#999;font-size:x-small;">{{act.when|dthumanize}}</span></span>
+        </span>
+        <div style="margin-top:10px;">
+            <span style="font-size:small;">
+                <a href="/{{ context }}/detail/{{ obj.item.pk }}/">{{ obj.item.name }} ({{ obj.item.year }})</a>
+            </span>
+            <br>
+            <div>
+            <img style="float:left;" width="60" height="60" src="http://goo.gl/xPV6y"/>
+            <div style="font-size:x-small;margin-left:2cm;"> A teenager is accidentally sent 30 years into the past in a time-traveling DeLorean invented by his friend, Dr. Emmett Brown, and must make sure his high-school-age parents unite in order to save his own existence.</div>
+            </div>
+        </div>
+        {% elif act.what == 'follow' %}
+        <span style="font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        is now following <a data-ajax="/{{context}}/user_popover/?user={{obj.user.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ obj.user.username }}</a>
+        <span style="color:#999;font-size:x-small;float:right;">{{act.when|dthumanize}}</span>
+        </span>
+        <div style="margin-top:10px;">
+            <img width="60" height="60" src="{{ obj.user.profile.pic_url}}"/>
+            {% for item in obj.items %}
+                <img width="50" height="60" src="http://goo.gl/xPV6y"/>
+            {% endfor %}
+        </div>
+        {% elif act.what == 'recommend' %}
+        <span style="font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        recommended <a href="/{{ context }}/detail/{{ obj.pk }}/">{{ obj.name }}</a>
+        <span style="color:#999;font-size:x-small;">{{act.when|dthumanize}}</span>
+        </span>
+        {% endif %}
+</div>
+</div>
+{% endfor %}
+<button class="btn btn-primary" onclick="homemore(this,{{noffset}});">more</button>
