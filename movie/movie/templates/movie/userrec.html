@@ -1,0 +1,5 @@
+{% if userrec %}
+<button onclick="$('#recbutton').load('/{{ context }}/userrec/?a=unrec&userrec={{userrec.pk}}&item={{item.pk}}')">Unrecommend!</button>
+{% else %}
+<button onclick="$('#recbutton').load('/{{ context }}/userrec/?a=rec&item={{item.pk}}')">Recommend this!</button>
+{% endif %}

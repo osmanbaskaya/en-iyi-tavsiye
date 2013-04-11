@@ -45,6 +45,7 @@ def reclist(request):
 def home(request):
     followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
     actions = Action.objects.filter(user__in=followees).order_by('-when')
+<<<<<<< HEAD
     tuples = []
     for ac in actions:
         if ac.what == 'follow':
@@ -59,6 +60,9 @@ def home(request):
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
     return render(request, context + '/home.html',{'context':context,'tuples':tuples,'fusers':getneighbors(request.user)})
+=======
+    return render(request, context + '/home.html',{'context':context,'actions':actions,'fusers':getneighbors(request.user)})
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
 
 @login_required(login_url='/login/')
 def rate(request):

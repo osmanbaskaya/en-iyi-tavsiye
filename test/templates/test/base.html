@@ -7,7 +7,11 @@
 
         <!-- Le styles -->
         <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
+<<<<<<< HEAD
         <link href="{{ STATIC_URL }}css/mystyle.css" rel="stylesheet"/>
+=======
+        <link href="{{ STATIC_URL }}css/jquery.rating.css" rel="stylesheet"/>
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -15,6 +19,7 @@
         </style>
         <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<<<<<<< HEAD
         <script type="text/javascript" src="{{ STATIC_URL }}/jquery.blockUI.js"></script>
         <script>
             //$(function() {
@@ -83,13 +88,27 @@
             console.log("rate executed.");
         }
         </script>
+=======
+        <script type="text/javascript" src="{{ STATIC_URL }}/jquery.rating.pack.js"></script>
+        <script>
+                function rate(item_id,rating){
+                    $('input[name="rgroup_'+item_id+'"]').attr("disabled",true);
+                    if(rating<0)
+                        $('#a'+item_id).attr("href","#");
+                        $('#row'+item_id).load('/{{ context }}/rate/?item_id='+item_id+'&rating='+rating);
+                }
+          </script>
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
 
 
 
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-tooltip.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-popover.js"></script>
+<<<<<<< HEAD
           <!--<script type="text/javascript" src="{{ STATIC_URL }}klaas/jquery.popover-1.1.2.js"></script>-->
+=======
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
           <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
           <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -123,7 +142,10 @@
               </div>
           </div>
           <div class="container">
+<<<<<<< HEAD
             <div onmouseout="$('#thepopup').hide();" onmouseover="$('#thepopup').show();" id="thepopup" class="popover fade right in" style="top: 0px; left: 0px; display: none;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title">A Title</h3><div class="popover-content"><p>And heres some amazing content. Its very engaging. right?</p></div></div></div>
+=======
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
               <ul class="nav nav-tabs">
                   <li {% if context == 'movie' %}class="active"{% endif %}> <a href="/movie/home">Movie</a> </li>
                   <li {% if context == 'test' %}class="active"{% endif %}><a href="/test/home">Test</a></li>

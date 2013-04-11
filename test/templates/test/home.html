@@ -2,6 +2,7 @@
 {% load extras %}
 {% block body %}
 <div style="float:left">
+<<<<<<< HEAD
 {% for act, obj in tuples %}
 <div style="min-height:110px;">
 <div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>
@@ -34,6 +35,10 @@
         {% endif %}
 </div>
 </div>
+=======
+{% for act in actions %}
+<p><img width="50" height="50" src="{{act.user.profile.pic_url}}"><span style="margin-left:5px"><a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a> {{act.stringify|safe}} <span style="color:#999">{{act.when|dthumanize}}</span></span></p>
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
 {% endfor %}
 </div>
 {%if fusers %}

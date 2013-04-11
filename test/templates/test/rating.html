@@ -2,6 +2,7 @@
 <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
 </td>
 <td>
+<<<<<<< HEAD
 <div style="cursor:default;max-width:120px;padding:3px 3px 3px 3px" data-item="{{row.0.pk}}">
 {%for v in rlist %}
 <img {%if not row.1 %}class="gray-star rating"{% elif v <= row.1.rating %}class="yellow-star rating"{%else%}class="gray-star rating"{% endif %}
@@ -11,3 +12,16 @@ src="{{STATIC_URL}}img/transparent.png">
 <img {%if not row.1 %}style="display:none"{% endif %} class="delete-btn"  data-n="-1" data-item="{{row.0.pk}}"
  src="{{STATIC_URL}}img/transparent.png" onclick="imgdelclick(this);">
 </div>
+=======
+<div class="btn-group" data-toggle="buttons-radio">
+    {%for v in rlist %}
+    <input name="rgroup_{{row.0.pk}}" {%if row.1 and row.1.rating == v %}checked{%endif%} type="radio"
+    onclick="rate({{row.0.pk}},{{v}});" > {{v}} {% endfor %}
+</div>
+</td>
+{% if row.1 %}
+<td>
+    <a id="a{{row.0.pk}}" onclick="rate({{row.0.pk}},-1);">clear</a>
+</td>
+{% endif %}
+>>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4

@@ -1,0 +1,49 @@
+{% extends context|add:"/base.html" %}
+{% load extras %}
+{% block body %}
+<div style="float:left">
+{% for act, obj in tuples %}
+<div style="min-height:110px;">
+<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>
+<div style="padding-left:1.5cm;">
+    <hr style="margin-bottom:0.1cm;"/>
+        {% if act.what == 'rate' %}
+        <span style="margin-left:5px;font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        rated <a href="/{{ context }}/detail/{{ obj.item.pk }}/">{{ obj.item.name }}</a>
+        <span style="color:#999;font-size:x-small;">{{act.when|dthumanize}}</span>
+        </span>
+        {% elif act.what == 'follow' %}
+        <span style="margin-left:5px;font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        is now following <a href="/{{ context }}/profile/{{ obj.user.pk }}/">{{ obj.user.username }}</a>
+        <span style="color:#999;font-size:x-small;">{{act.when|dthumanize}}</span>
+        </span>
+        <div style="margin-top:10px;">
+            <img width="60" height="60" src="{{ obj.user.profile.pic_url}}"/>
+            {% for item in obj.items %}
+                <img width="30" height="60" src="{{ item.img }}"/>
+            {% endfor %}
+        </div>
+        {% elif act.what == 'recommend' %}
+        <span style="margin-left:5px;font-size:small;">
+        <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
+        recommended <a href="/{{ context }}/detail/{{ obj.pk }}/">{{ obj.name }}</a>
+        <span style="color:#999;font-size:x-small;">{{act.when|dthumanize}}</span>
+        </span>
+        {% endif %}
+</div>
+</div>
+{% endfor %}
+</div>
+{%if fusers %}
+<div id="right" style="float:right">
+<table>
+  {% for u in fusers %}
+  <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a href="/{{ context }}/profile/?u={{u.pk}}">{{u.username}}</a></td>
+      <td><div id="followbutton{{u.pk}}"><button onclick="$('#followbutton{{u.pk}}').load('/{{ context }}/follow/?user={{u.pk}}');">Follow</button></div></td></tr>
+  {% endfor %}
+</table>
+</div>
+{%endif%}
+{% endblock %}

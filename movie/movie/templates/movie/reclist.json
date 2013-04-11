@@ -1,0 +1,4 @@
+    {% for item, pre, norm in form.recs %}
+    {title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
+    {% endfor %}
+    ].reverse();
