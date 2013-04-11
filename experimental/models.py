@@ -8,6 +8,7 @@ context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
+
 class Action(models.Model):
     user = models.ForeignKey(User)
     what = models.CharField(max_length=50)
@@ -33,7 +34,8 @@ class Item(models.Model):
     #additional fields: isbn,author, director
 
     year = models.IntegerField('date published', null=True)
-    img = models.CharField(max_length=250,default="http://goo.gl/xPV6y")
+    img = models.CharField(max_length=250,default="http://goo.gl/nSZUx")
+    description = models.TextField()
 
     @staticmethod
     def get_rated_by(user):
@@ -131,3 +133,13 @@ def generate_test():
             map(tagset.add,tagl) 
             for t in tagl:
                 Tag.objects.create(item=item,tag=t)
+
+class Comment(models.Model):
+
+    user = models.ForeignKey(User,related_name='+')
+    item = models.ForeignKey(Item)
+    comment = models.TextField()
+    commented_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table='%s_comment' % context

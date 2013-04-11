@@ -11,6 +11,7 @@ from django.forms.models import modelformset_factory
 import json, sys
 from django.core.serializers.json import DjangoJSONEncoder
 from webservice import WebService
+import random
 
 #constants
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
@@ -20,7 +21,6 @@ context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 def user_popover(request):
     user_id = request.GET.get('user')
     user = User.objects.get(pk=user_id)
-    import random
     sim_perc = random.randint(0,100)
     try:
         f = Follow.objects.get(follower=request.user,
@@ -56,6 +56,17 @@ def reclist(request):
     reclist.reverse()
     return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
+@login_required(login_url='/login/')
+def home_comments(request):
+    item_id = request.GET.get('itemid')
+    item = Item.objects.get(pk=int(item_id))
+    if request.GET.get('comment',False):
+        comment = request.GET.get('comment')
+        Comment.objects.create(user=request.user,item=item,comment=comment)
+
+    comments = Comment.objects.filter(item=item)
+    return render(request, context + '/home_comments.html',{'context':context,
+        'comments':comments,'item':item})
 @login_required(login_url='/login/')
 def _home_more(request):
     offset = int(request.GET.get('offset'))
@@ -93,7 +104,7 @@ def _home_more(request):
 @login_required(login_url='/login/')
 def home(request):
     offset = int(request.GET.get('offset',0))
-    limit = 2
+    limit = 10
     followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
     actions = Action.objects.filter(user__in=followees).order_by('-when')[offset:limit]
     tuples = []
@@ -115,7 +126,7 @@ def home(request):
 @login_required(login_url='/login/')
 def home_more(request):
     offset = int(request.GET.get('offset',0))
-    limit = 2
+    limit = 10
     followees = [f.followee_id for f in Follow.objects.filter(follower=request.user)]
     actions = Action.objects.filter(user__in=followees).order_by('-when')[offset:offset+limit]
     tuples = []
@@ -227,14 +238,30 @@ def detail(request,pk):
     from django.db.models import Avg, Count
     item = Item.objects.get(pk=pk)
     res = Rating.objects.filter(item_id=item.pk).aggregate(num_ratings=Count('id'),avg_rating=Avg('rating'))
-    if UserRec.objects.filter(user=request.user,
+    '''if UserRec.objects.filter(user=request.user,
             item=item).count():
         userrec=UserRec.objects.get(user=request.user,item=item)
     else:
-        userrec=None
+        userrec=None'''
+
+    if Rating.objects.filter(user=request.user,item=item).exists():
+        rating = Rating.objects.get(user=request.user,item=item)
+    else:
+        rating = Rating(user=request.user,item=item,rating=random.randint(1,5))
+    row = (item,rating)
+
+    ratingc = Rating.objects.filter(item=item).count()
+    reviewc = Comment.objects.filter(item=item).count()
+
+    comments = Comment.objects.filter(item=item)
+    
+    sim_items = random.sample(Item.objects.all(), 6)
+    
 
     return render(request,context + '/item.html',{
-        'status':str(res),'item':item,'userrec':userrec})
+        'context':context,'status':str(res),'item':item,
+        'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
+        'comments':comments, 'sim_items':sim_items})
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')

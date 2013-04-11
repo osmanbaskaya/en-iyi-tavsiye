@@ -1,4 +1,4 @@
-<div style="cursor:default;padding:3px 3px 3px 3px" data-item="{{row.0.pk}}">
+<div style="cursor:default;max-width:120px;zoom:0.7" data-item="{{row.0.pk}}">
 {%for v in rlist %}
 <img {%if not row.1 %}class="gray-star rating"{% elif v <= row.1.rating %}class="yellow-star rating"{%else%}class="gray-star rating"{% endif %}
 {%if row.1 and row.1.rating == v %}data-selected{% endif %} data-n="{{v}}" data-item="{{row.0.pk}}" onmouseover="imghover(this);" onmouseout="imgmouseout(this);" onclick="imgclick(this);"

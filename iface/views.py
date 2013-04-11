@@ -13,7 +13,7 @@ from registration.views import register
 
 def log_in(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/movie/profile/')
+        return HttpResponseRedirect('/experimental/profile/')
 
     # Not authenticated
     if request.method == 'POST':
@@ -28,7 +28,7 @@ def log_in(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/movie/profile/')
+                return HttpResponseRedirect('/experimental/profile/')
             else:
                 return render_to_response('login.html', {'error_message': 
                                                     'blocked account'})

@@ -1,0 +1,9 @@
+{% for c in comments %}
+    <div style="min-width:250px"><img width="30px" height="60px" src="{{c.user.profile.pic_url}}"/><input readonly type="text" value="{{c.comment}}"/></div>
+{% endfor %}
+<div style="min-width:350px">
+<form id="commentform{{item.pk}}">
+    <div style="float:left;"><img width="30px" height="60px" src="{{user.profile.pic_url}}"/><input  type="text" name="comment"/></div>
+</form>
+<button class="btn btn-primary" onclick="addcomment({{item.pk}});">comment</button>
+</div>

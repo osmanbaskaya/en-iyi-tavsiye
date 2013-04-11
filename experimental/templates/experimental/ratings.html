@@ -8,7 +8,10 @@ Number of movies : {{ rows|length }}
 <table>
 {% for row in rows %}
 <tr id="row{{row.0.pk}}">
+    <td> <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
+    <td>
     {% include context|add:"/rating.html" %}
+    </td>
 </tr>
 {% endfor %}
 </table>

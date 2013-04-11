@@ -1,6 +1,16 @@
 {% load extras %}
+<script>
+    function comments(itemid){
+        $('#comments'+itemid).load('/{{context}}/home/comments/?itemid='+itemid);
+    }
+    function addcomment(itemid){
+        $.get('/{{context}}/home/comments/?itemid='+itemid+'&'+$('#commentform'+itemid).serialize(),function(res){
+            $('#comments'+itemid).html(res);
+        });
+    }
+</script>
 {% for act, obj in tuples %}
-<div style="min-height:110px;">
+<div style="min-height:200px;">
 <div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>
 <div style="padding-left:1.5cm;">
     <hr style="margin-bottom:0.1cm;"/>
@@ -16,20 +26,25 @@
             </span>
             <br>
             <div>
-            <img style="float:left;" width="60" height="60" src="http://goo.gl/xPV6y"/>
-            <div style="font-size:x-small;margin-left:2cm;"> A teenager is accidentally sent 30 years into the past in a time-traveling DeLorean invented by his friend, Dr. Emmett Brown, and must make sure his high-school-age parents unite in order to save his own existence.</div>
+                <img style="float:left;" width="100" height="160" src="http://goo.gl/xWbnn"/>
+                <div style="font-size:small;margin-left:3cm;">{{obj.item.description}}</div>
+                </div>
             </div>
-        </div>
+            <div style="margin-top:80px;">
+                <a onclick="comments({{obj.item.pk}});">comments</a>
+            </div>
+            <div style="max-width:50px;" id="comments{{obj.item.pk}}">
+            </div>
         {% elif act.what == 'follow' %}
         <span style="font-size:small;">
         <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
-        is now following <a data-ajax="/{{context}}/user_popover/?user={{obj.user.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ obj.user.username }}</a>
+        is now following {% if obj.user == user %}you{%else%}<a data-ajax="/{{context}}/user_popover/?user={{obj.user.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ obj.user.username }}</a>{%endif%}
         <span style="color:#999;font-size:x-small;float:right;">{{act.when|dthumanize}}</span>
         </span>
         <div style="margin-top:10px;">
-            <img width="60" height="60" src="{{ obj.user.profile.pic_url}}"/>
+            <img width="120" height="160" src="{{ obj.user.profile.pic_url}}"/>
             {% for item in obj.items %}
-                <img width="50" height="60" src="http://goo.gl/xPV6y"/>
+                <img width="50" height="60" src="http://goo.gl/xWbnn"/>
             {% endfor %}
         </div>
         {% elif act.what == 'recommend' %}
