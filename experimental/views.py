@@ -285,18 +285,21 @@ def profile(request):
     except Follow.DoesNotExist:
         f=Follow(follower=request.user,followee=user)
 
+    sim_users = getneighbors(user, 12)
+
     recs = UserRec.objects.filter(user=user)
     return render(request, context + '/profile.html', {
         'context':context,'recs': recs, 'followees': followees, 
         'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
+        'sim_users': sim_users,
         })
 
 
 #### UTILS ######
 
 
-def getneighbors(user):
-    return User.objects.filter()[:5]
+def getneighbors(user, n=5):
+    return User.objects.filter()[:n]
     w = WebService(context)
     strarr = w.get_nearestneighbors(user.id)
     uids = [int(s.split(';')[0]) for s in strarr]

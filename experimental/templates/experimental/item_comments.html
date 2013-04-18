@@ -1,12 +1,12 @@
 {% load extras %}
 {% for c in comments %}
 <div style="width:80%;">
-<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{user.profile.pic_url}}"></div>
+<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{c.user.profile.pic_url}}"></div>
 <div style="padding-left:1.5cm;">
 <hr style="margin-bottom:0.1cm;"/>
     <div style="width:80%">
         <div style="float:left;padding:3px;padding-right:5px;font-size:small;">
-            <a href="/{{ context }}/profile/?u={{user.id}}">{{user.username}}</a> rated it
+            <a href="/{{ context }}/profile/?u={{c.user.id}}">{{c.user.username}}</a> rated it
         </div>
         <div style="zoom:0.8;max-width:240px">
             {% include context|add:"/rating.html" %}

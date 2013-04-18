@@ -1,72 +1,95 @@
 {% extends context|add:"/base.html" %}
 
 {% block body %}
-<div style="float:left">
-<br\>
 
-<h2><img width="75px" height="150px" src="{{auser.profile.pic_url}}"/> {{ auser.username }}
+<div>
+    <div style="min-width:100%; min-height:27px"> 
+        <div style="float:left;">
+            <span style="font-size:xx-large;font-style:italic;">
+                {{ auser.username }}, 
+            </span>
+            <span style="font-size:large;font-style:italic;">
+                Software Engineer @ EniyiTavsiye.com, Istanbul, Turkey
+            </span>
+        </div>
+        <div style="float:right">
+            {%if auser != user %}
+                <div id="followbutton{{auser.pk}}" style="float:right;">
+                    {% include context|add:"/following.html" %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <hr style="margin:3px"/>
+    <div id="userprop" style="float:left; width:15%; height:%100;">
+        <img width="170px" height="150px" src="{{auser.profile.pic_url}}"/>
+            </br>
+            </br>
+            <span style="font-size:small;">
+            <a href="">Rated Movies {{ rows|length }}</a> 
+            </span>
+            </br>
+            {% for row in rows|slice:":12" %}
+                <a data-ajax="/{{context}}/item_popover/?item={{row.0.pk}}" 
+                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                href=""><img width="25px" 
+                src="{{ row.0.img }}"/></a>
+            {% endfor %}
+            </br>
+            </br>
+            <span style="font-size:small;">
+            <a href="#">Followings {{ followees|length }}</a> 
+            </span>
+            </br>
+                {% for followee in followees %}
+                <a data-ajax="/{{context}}/user_popover/?user={{followee.pk}}" 
+                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                href="?u={{followee.pk}}"><img width="30px" 
+                src="{{ followee.profile.pic_url }}"/></a>
+                {% endfor %}
+            </br>
+            </br>
+            <span style="font-size:small;">
+            <a href="#">Followers {{ followees|length }}</a> 
+            </span>
+            </br>
+                {% for followee in followees %}
+                <a data-ajax="/{{context}}/user_popover/?user={{followee.pk}}" 
+                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                href="#"><img width="30px" 
+                src="{{ followee.profile.pic_url }}"/></a>
+                {% endfor %}
+            </br>
+            </br>
+            <span style="font-size:small;">
+            <a href="#">Reviews {{ followees|length }}</a> 
+            </span>
+    </div>
 
-{%if auser != user %}
-<div id="followbutton{{auser.pk}}" style="float:right;">
-    {% include context|add:"/following.html" %}
+    <div style="margin-left:15px; float:left; width:60%">
+        <span style="font-size:large;font-style:italic;">
+            <center>
+                Recent Actions
+            </center>
+        </span>
+        <hr style="margin:3px"/>
+    </div>
+    <div style="float:right; width:20%; height:100%">
+        <div>
+            <span style="font-style:italic;">
+                <center> 
+                Similar Users
+                </center> 
+            <hr style="margin:3px"/>
+            </span>
+            {% for u in sim_users %}
+                <a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" 
+                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                href="?u={{u.pk}}"><img width="50px" 
+                src="{{ u.profile.pic_url }}"/></a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
-{% endif %}
 
-<a href="#" id="test" class="btn"  onmouseout="$('#thepopup').hide();" onmouseover="popup(this);">test</a>
-<br\><br\><br\><br\>
-
-<h3>Recommendation from {{ auser.username }} </h3>
-<br\>
-
-<table border="1">
-    <tr>
-        <td>Movie Name </td>
-        <td>Comment</td>
-    </tr>
-    {% for rec in recs %}
-    <tr>
-        <td>
-            <a href="/{{ context }}/detail/{{rec.item.pk}}">{{rec.item.name}}</a>
-        </td>
-        <td>
-            {{ rec.comment }}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
-<h3>Following Users </h3>
-<br\>
-<table border="1">
-    {% for followee in followees %}
-    <tr><td><a data-ajax="/{{context}}/user_popover/?user={{followee.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ followee.username }}</a></td></tr> 
-    {% endfor %}
-</table>
-</div>
-<div style="margin-left:350px;">
-Number of movies : {{ rows|length }}
-<table>
-{%if auser != user %}
-    {% for row in rows %}
-    <tr>
-        <td>
-        <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
-        </td>
-        <td>
-            {{row.1.rating}}
-        </td>
-    </tr>
-    {% endfor %}
-{%else%}
-    {% for row in rows %}
-    <tr id="row{{row.0.pk}}">
-        <td> <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
-        <td>
-        {% include context|add:"/rating.html" %}
-        </td>
-    </tr>
-    {% endfor %}
-{%endif%}
-</table>
-</div>
 {% endblock %}
