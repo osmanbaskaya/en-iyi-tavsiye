@@ -265,6 +265,32 @@ def detail(request,pk):
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')
+def profile_ratings(request):
+    user = request.user
+    ratings = Rating.objects.filter(user=user)
+    rows =[]
+    for r in ratings:
+        rows.append((r.item,r))
+
+    return render(request, context + '/profile_ratings.html', {
+        'context':context,'rows':rows,
+        })
+@login_required(login_url='/login/')
+def profile_users(request):
+    user = request.user
+    if request.GET.get('t',False) == 'follows':
+        followings = Follow.objects.filter(follower=user)
+        users = [f.followee for f in followings]
+    elif request.GET.get('t',False) == 'followers':
+        followings = Follow.objects.filter(followee=user)
+        users = [f.follower for f in followings]
+
+    return render(request, context + '/profile_users.html', {
+        'context':context,'users': users, 
+        'auser': user,'user':request.user,
+        })
+
+@login_required(login_url='/login/')
 def profile(request):
     if request.GET.get('u'):
         user = User.objects.get(pk=request.GET.get('u'))
@@ -277,8 +303,8 @@ def profile(request):
     for r in ratings:
         rows.append((r.item,r))
     
-    followings = Follow.objects.filter(follower=user)
-    followees = [f.followee for f in followings]
+    followees = Follow.objects.filter(follower=user)
+    followers = Follow.objects.filter(followee=user)
     try:
         f = Follow.objects.get(follower=request.user,
                 followee=user)
@@ -288,10 +314,28 @@ def profile(request):
     sim_users = getneighbors(user, 12)
 
     recs = UserRec.objects.filter(user=user)
+    offset = int(request.GET.get('offset',0))
+    limit = 10
+    actions = Action.objects.filter(user=user).order_by('-when')[offset:offset+limit]
+    tuples = []
+    for ac in actions:
+        if ac.what == 'follow':
+            tuples.append((ac,
+                {'user':User.objects.get(pk=ac.gen_id),'items':Item.objects.filter()[:5]}
+                ))
+        elif ac.what == 'rate':
+            item = Item.objects.get(pk=ac.gen_id)
+            tuples.append((ac,
+                {'item': item,'rating':Rating.objects.get(user=ac.user,item=item).rating,'pre':3}
+                ))
+        elif ac.what == 'recommend':
+            tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
+
+
     return render(request, context + '/profile.html', {
-        'context':context,'recs': recs, 'followees': followees, 
+        'context':context,'recs': recs, 'followees': followees,'followers':followers, 
         'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
-        'sim_users': sim_users,
+        'sim_users': sim_users, 'tuples' : tuples,'noffset':limit+offset,
         })
 
 

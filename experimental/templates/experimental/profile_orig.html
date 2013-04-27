@@ -49,7 +49,9 @@ Number of movies : {{ rows|length }}
 {%if auser != user %}
     {% for row in rows %}
     <tr>
-        <td>
+    
+        <td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>
+        <td align="center">
         <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
         </td>
         <td>
@@ -60,7 +62,8 @@ Number of movies : {{ rows|length }}
 {%else%}
     {% for row in rows %}
     <tr id="row{{row.0.pk}}">
-        <td> <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
+        <td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>
+        <td align="center"> <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
         <td>
         {% include context|add:"/rating.html" %}
         </td>

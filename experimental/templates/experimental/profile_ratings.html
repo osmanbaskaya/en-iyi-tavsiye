@@ -1,0 +1,11 @@
+{% for row in rows %}
+<tr>
+    <td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>
+    <td align="center">
+    <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a>
+    </td>
+    <td>
+        {{row.1.rating}}
+    </td>
+</tr>
+{% endfor %}

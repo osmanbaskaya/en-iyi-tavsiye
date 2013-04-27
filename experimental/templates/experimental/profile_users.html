@@ -1,0 +1,19 @@
+{% load extras %}
+{% for user in users %}
+<div style="min-height:200px;">
+    <!--<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>-->
+<div style="padding-left:1.5cm;">
+    <hr style="margin-bottom:0.1cm;"/>
+        <span style="font-size:small;">
+            <!--<a href="/{{ context }}/profile/?u={{user.pk}}">{{user.username}}</a>-->
+        <a data-ajax="/{{context}}/user_popover/?user={{user.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href="#"> {{ user.username }}</a>
+        <span style="color:#999;font-size:x-small;float:right;">{{act.when|dthumanize}}</span>
+        </span>
+        <div style="margin-top:10px;">
+            <img width="120" height="160" src="{{ user.profile.pic_url}}"/>
+            <button class="btn btn-primary" >Follow</button>
+        </div>
+</div>
+</div>
+{% endfor %}
+<button class="btn btn-primary" onclick="homemore(this,{{noffset}});">more</button>

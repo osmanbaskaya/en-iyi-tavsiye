@@ -5,10 +5,10 @@
 <div>
     <div style="min-width:100%; min-height:27px"> 
         <div style="float:left;">
-            <span style="font-size:xx-large;font-style:italic;">
+            <span style="font-size:xx-large;">
                 {{ auser.username }}, 
             </span>
-            <span style="font-size:large;font-style:italic;">
+            <span style="font-size:large;">
                 Software Engineer @ EniyiTavsiye.com, Istanbul, Turkey
             </span>
         </div>
@@ -26,7 +26,7 @@
             </br>
             </br>
             <span style="font-size:small;">
-            <a href="">Rated Movies {{ rows|length }}</a> 
+            <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/');">Rated Movies {{ rows|length }}</a> 
             </span>
             </br>
             {% for row in rows|slice:":12" %}
@@ -38,26 +38,26 @@
             </br>
             </br>
             <span style="font-size:small;">
-            <a href="#">Followings {{ followees|length }}</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=follows');">Follows {{ followees|length }}</a> 
             </span>
             </br>
-                {% for followee in followees %}
-                <a data-ajax="/{{context}}/user_popover/?user={{followee.pk}}" 
+                {% for f in followees %}
+                <a data-ajax="/{{context}}/user_popover/?user={{f.followee_id}}" 
                 onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
-                href="?u={{followee.pk}}"><img width="30px" 
-                src="{{ followee.profile.pic_url }}"/></a>
+                href="?u={{f.followee.pk}}"><img width="30px" 
+                src="{{ f.followee.profile.pic_url }}"/></a>
                 {% endfor %}
             </br>
             </br>
             <span style="font-size:small;">
-            <a href="#">Followers {{ followees|length }}</a> 
+            <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=followers');">Followers {{ followers|length }}</a> 
             </span>
             </br>
-                {% for followee in followees %}
-                <a data-ajax="/{{context}}/user_popover/?user={{followee.pk}}" 
+                {% for f in followers %}
+                <a data-ajax="/{{context}}/user_popover/?user={{f.follower_id}}" 
                 onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
                 href="#"><img width="30px" 
-                src="{{ followee.profile.pic_url }}"/></a>
+                src="{{ f.follower.profile.pic_url }}"/></a>
                 {% endfor %}
             </br>
             </br>
@@ -67,10 +67,10 @@
     </div>
 
     <div style="margin-left:15px; float:left; width:60%">
-        <span style="font-size:large;font-style:italic;">
-            <center>
-                Recent Actions
-            </center>
+        <span style="font-size:large;">
+                <div id="profilecontent">
+                {% include context|add:"/profile_more.html" %}
+                </div>
         </span>
         <hr style="margin:3px"/>
     </div>
