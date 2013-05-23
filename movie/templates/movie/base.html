@@ -7,11 +7,7 @@
 
         <!-- Le styles -->
         <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
-<<<<<<< HEAD
         <link href="{{ STATIC_URL }}css/mystyle.css" rel="stylesheet"/>
-=======
-        <link href="{{ STATIC_URL }}css/jquery.rating.css" rel="stylesheet"/>
->>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -19,8 +15,46 @@
         </style>
         <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-<<<<<<< HEAD
         <script type="text/javascript" src="{{ STATIC_URL }}/jquery.blockUI.js"></script>
+        <script>
+            function getOffset( el ) {
+                var _x = 0;
+                var _y = 0;
+                while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+                    _x += el.offsetLeft - el.scrollLeft;
+                    _y += el.offsetTop - el.scrollTop;
+                    el = el.offsetParent;
+                    console.log(el);
+                }
+                return { top: _y, left: _x };
+            }
+            function popup(el){
+                var w = $(el).width();
+                var h = $(el).height();
+                //var tl = getOffset(el);
+                var tl = $(el).offset();
+                console.log(el);
+                t = tl.top + h;
+                l = tl.left-10;
+                console.log(t);
+                console.log(l);
+                ww = $(window).width();
+                pw = $('#thepopup').width();
+                if(l+pw>ww){
+                    console.log('tasior');
+                    l = ww-pw-20;
+                }
+                set_top_left(t,l);
+                $('#thepopup').html('<div class="popover-inner"><div class="popover-content">loading</div></div>');
+                var url = $(el).attr('data-ajax');
+                if(url) $('#thepopup').load(url);
+                $('#thepopup').show();
+            }
+            function set_top_left(t,l){
+                $('#thepopup').css('top',t+'px');
+                $('#thepopup').css('left',l+'px');
+            }
+        </script>
         <script>
             //$(function() {
             function turnyellow(i,s){
@@ -88,23 +122,13 @@
             console.log("rate executed.");
         }
         </script>
-=======
-        <script type="text/javascript" src="{{ STATIC_URL }}/jquery.rating.pack.js"></script>
-        <script>
-                function rate(item_id,rating){
-                    $('input[name="rgroup_'+item_id+'"]').attr("disabled",true);
-                    if(rating<0)
-                        $('#a'+item_id).attr("href","#");
-                        $('#row'+item_id).load('/{{ context }}/rate/?item_id='+item_id+'&rating='+rating);
-                }
-          </script>
->>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
 
 
 
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-tooltip.js"></script>
           <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-popover.js"></script>
+          <!--<script type="text/javascript" src="{{ STATIC_URL }}klaas/jquery.popover-1.1.2.js"></script>-->
           <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
           <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -115,8 +139,8 @@
       </head>
 
       <body>
-          <div class="navbar navbar-fixed-top">
-              <div class="navbar-inner">
+          <div id="offsetparent" class="navbar navbar-fixed-top">
+              <div id="offsetparent" class="navbar-inner">
                   <div class="container">
                       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                           <!--<a class="brand" href="/"><img src="{{STATIC_URL}}img/logo.png"></a>-->
@@ -138,9 +162,10 @@
               </div>
           </div>
           <div class="container">
+            <div onmouseout="$('#thepopup').hide();" onmouseover="$('#thepopup').show();" id="thepopup" class="popover fade right in" style="top: 0px; left: 0px; display: none;"><div class="popover-inner"><h3 class="popover-title">A Title</h3><div class="popover-content"><p>And heres some amazing content. Its very engaging. right?</p></div></div></div>
               <ul class="nav nav-tabs">
                   <li {% if context == 'movie' %}class="active"{% endif %}> <a href="/movie/home">Movie</a> </li>
-                  <li {% if context == 'test' %}class="active"{% endif %}><a href="/test/home">Test</a></li>
+                  <li {% if context == 'experimental' %}class="active"{% endif %}><a href="/experimental/home">Exp</a></li>
                   <!--<li><a href="/music/home">Music</a></li>-->
                   <form style="float:right" id="search_form" action="/{{ context }}/search/" class="navbar-search pull-right">
                       <input type="text" name="q" class="search-query" placeholder="Search"/>

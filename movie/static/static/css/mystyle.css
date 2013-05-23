@@ -2,19 +2,18 @@ img.gray-star
 {
     width:16px;
     height:16px;
-    /*background:url(star.gif) 0 48;*/
-    background:url('gray.gif');
+    background:url(star.gif)  0px 0px;
 }
 img.yellow-star
 {
     width:16px;
     height:16px;
-    background:url('yellow.gif');
+    background:url(star.gif) 0px -32px;
 }
 img.delete-btn
 {
     width:16px;
     height:16px;
-    background:url('delete.gif');
+    background:url(delete.gif) 0px 16px;
 }
 

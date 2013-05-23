@@ -6,27 +6,25 @@
     <div style="min-width:100%; min-height:27px"> 
         <div style="float:left;">
             <span style="font-size:xx-large;">
-                {{ auser.username }}, 
+                {{ user.username }}, 
             </span>
             <span style="font-size:large;">
                 Software Engineer @ EniyiTavsiye.com, Istanbul, Turkey
             </span>
         </div>
         <div style="float:right">
-            {%if auser != user %}
-                <div id="followbutton{{auser.pk}}" style="float:right;">
+                <div id="followbutton{{user.pk}}" style="float:right;">
                     {% include context|add:"/following.html" %}
                 </div>
-            {% endif %}
         </div>
     </div>
     <hr style="margin:3px"/>
     <div id="userprop" style="float:left; width:15%; height:%100;">
-        <img width="170px" height="150px" src="{{auser.profile.pic_url}}"/>
+        <img width="170px" height="150px" src="{{user.profile.pic_url}}"/>
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/');">Rated Movies ({{ rows|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/?u={{user.pk}}');">Rated Movies ({{ rows|length }})</a> 
             </span>
             </br>
             {% for row in rows|slice:":12" %}
@@ -36,36 +34,36 @@
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=follows');">Follows ({{ followees|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=follows&u={{user.pk}}');">Follows ({{ followees|length }})</a> 
             </span>
             </br>
                 {% for f in followees %}
                 <a data-ajax="/{{context}}/user_popover/?user={{f.followee_id}}" 
-                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                onmouseout="cpopup(this);" onmouseover="bpopup(this);" 
                 href="?u={{f.followee.pk}}"><img width="30px" 
                 src="{{ f.followee.profile.pic_url }}"/></a>
                 {% endfor %}
             </br>
             </br>
             <span style="font-size:small;">
-            <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=followers');">Followers ({{ followers|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=followers&u={{user.pk}}');">Followers ({{ followers|length }})</a> 
             </span>
             </br>
                 {% for f in followers %}
                 <a data-ajax="/{{context}}/user_popover/?user={{f.follower_id}}" 
-                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                onmouseout="cpopup(this);" onmouseover="bpopup(this);" 
                 href="#"><img width="30px" 
                 src="{{ f.follower.profile.pic_url }}"/></a>
                 {% endfor %}
             </br>
             </br>
             <span style="font-size:small;">
-            <a href="#">Reviews ({{ followees|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/?u={{user.pk}}');">Yorumlar ({{ followees|length }})</a> 
             </span>
     </div>
 
     <div id="profilecontent" style="padding-left:0.5cm;padding-top:0.3cm;float:left; width:50%">
-        {% include context|add:"/profile_more.html" %}
+        {% include context|add:"/profile/more.html" %}
     </div>
     <div style="float:right; width:20%; height:100%">
         <div>
@@ -77,7 +75,7 @@
             </span>
             {% for u in sim_users %}
                 <a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" 
-                onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" 
+                onmouseout="cpopup(this);" onmouseover="bpopup(this);" 
                 href="?u={{u.pk}}"><img width="50px" 
                 src="{{ u.profile.pic_url }}"/></a>
             {% endfor %}

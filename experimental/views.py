@@ -1,15 +1,10 @@
 # Create your views here.
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from models import *
 from forms import UnratedForm, RatingForm, RecommendationForm
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django.forms.formsets import formset_factory
-from django.core.context_processors import csrf
-from django.forms.models import modelformset_factory
-import json, sys
-from django.core.serializers.json import DjangoJSONEncoder
+import json
 from webservice import WebService
 import random
 
@@ -121,7 +116,7 @@ def home(request):
         elif ac.what == 'recommend':
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
-    return render(request, context + '/home_orig.html',{'context':context,'tuples':tuples, 'noffset':limit+offset,'fusers':getneighbors(request.user)})
+    return render(request, context + '/home.html',{'context':context,'tuples':tuples, 'noffset':limit+offset,'fusers':getneighbors(request.user)})
 
 @login_required(login_url='/login/')
 def home_more(request):
@@ -171,7 +166,7 @@ def rate(request):
 def feedrec(request):
     n=10
     unrated_items= Item.get_unrated_by(request.user)
-    from random import sample, randint
+    from random import sample
     k = unrated_items.count() - n
     if k > 0:
         unrated_items = sample(unrated_items, n)
@@ -272,29 +267,62 @@ def profile_ratings(request):
     for r in ratings:
         rows.append((r.item,r))
 
-    return render(request, context + '/profile_ratings.html', {
-        'context':context,'rows':rows,
+    return render(request, context + '/profile/ratings.html', {
+        'context':context,'rows':rows,'rlist':range(1,6)
         })
+
+
+@login_required(login_url='/login/')
+def profile_comments(request):
+    user = request.user
+    comments = Comment.objects.filter(user=user)
+    comments.reverse()
+    ratings = Rating.objects.filter(user=user)
+    rows =[]
+    for c in comments:
+        rating = None
+        for r in ratings:
+            if c.item_id == r.id:
+                rating = r.rating
+        rows.append((c, rating))
+
+    return render(request, context + '/profile/comments.html', {
+        'context':context,'rows':rows,'rlist':range(1,6)
+        })
+
 @login_required(login_url='/login/')
 def profile_users(request):
-    user = request.user
+    from random import randint
+    if request.GET.get('u'):
+        user = User.objects.get(pk=request.GET.get('u'))
+    else:
+        user = request.user
     if request.GET.get('t',False) == 'follows':
         followings = Follow.objects.filter(follower=user)
         users = [f.followee for f in followings]
     elif request.GET.get('t',False) == 'followers':
         followings = Follow.objects.filter(followee=user)
         users = [f.follower for f in followings]
+    rows=[]
+    for u in users:
+        try:
+            f = Follow.objects.get(follower=request.user,followee=u)
+        except Follow.DoesNotExist:
+            f = Follow(follower=request.user,followee=u)
+        rows.append((u,f,randint(0,100)))
 
-    return render(request, context + '/profile_users.html', {
-        'context':context,'users': users, 
+    return render(request, context + '/profile/fusers.html', {
+        'context':context,'rows': rows, 
         'auser': user,'user':request.user,
         })
 
 @login_required(login_url='/login/')
 def profile(request):
     if request.GET.get('u'):
+        is_self = False
         user = User.objects.get(pk=request.GET.get('u'))
     else:
+        is_self = True
         user = request.user
     ratings=Rating.objects.filter(user=user)
     ratings.reverse()
@@ -332,9 +360,13 @@ def profile(request):
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
 
-    return render(request, context + '/profile.html', {
+    if is_self:
+        tname = '/profile/index_self.html'
+    else:
+        tname = '/profile/index.html'
+    return render(request, context + tname, {
         'context':context,'recs': recs, 'followees': followees,'followers':followers, 
-        'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
+        'user':user, 'f': f,'rows':rows,'rlist':range(1,6),
         'sim_users': sim_users, 'tuples' : tuples,'noffset':limit+offset,
         })
 

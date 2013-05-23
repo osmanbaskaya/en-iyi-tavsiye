@@ -20,7 +20,7 @@
 <table>
     <caption>people to follow</caption>
   {% for u in fusers %}
-  <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" onmouseout="cpopup(this);" onmouseover="bpopup(this);" href=""> {{ u.username }}</a></td>
+  <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" onmouseout="$('#thepopup').hide();" onmouseover="popup(this);" href=""> {{ u.username }}</a></td>
       </tr>
   {% endfor %}
 </table>

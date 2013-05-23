@@ -2,17 +2,16 @@
 {% block body %}
 </br>
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-button.js"></script>
-<<<<<<< HEAD
-<p>asdf</p>
-=======
-<p>osmancan</p>
->>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
 
 Number of movies : {{ rows|length }}
 <table>
 {% for row in rows %}
 <tr id="row{{row.0.pk}}">
+    <td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>
+    <td align="center">  <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
+    <td>
     {% include context|add:"/rating.html" %}
+    </td>
 </tr>
 {% endfor %}
 </table>

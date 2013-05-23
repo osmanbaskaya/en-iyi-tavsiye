@@ -1,6 +1,7 @@
 {% extends context|add:"/base.html" %}
 
 {% block body %}
+{{reclist|length}}
 {% if not reclist|length %}
 <p> You need to rate more than {{limit}} items to get recommendations.</p>
 <p> Please rate {{diff}} more items.</p>
@@ -14,10 +15,7 @@
     function more(){
         for(var i=0; i<5 && results.length>0; i++){
             res = results.pop();
-<<<<<<< HEAD
             /*
-=======
->>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
             rowstr = 
                 '<td> <a href="/{{ context }}/detail/'+res.pk+'">'+res.title+'</a>'+
                 '</td> <td> <div class="btn-group" data-toggle="buttons-radio">';
@@ -27,7 +25,6 @@
                     'onclick="rate('+res.pk+','+v+');" >'+v
                     }
                     rowstr+='</div></td>';
-<<<<<<< HEAD
             */
             rowstr = '<td> <a href="/{{context}}/detail/'+res.pk+'">'+res.title+'</a> </td>'+
             '<td> <div style="cursor:default;max-width:120px;padding:3px 3px 3px 3px" data-item="'+res.pk+'">';
@@ -37,8 +34,6 @@
             }
             rowstr+=
             '<img style="display:none" class="delete-btn" data-n="-1" data-item="'+res.pk+'" src="/static/img/transparent.png" onclick="imgdelclick(this);"> </div></td>';
-=======
->>>>>>> 90145b96716ed4c50542de834571a76aac4b18c4
             $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
         }
 

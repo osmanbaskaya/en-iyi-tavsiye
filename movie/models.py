@@ -5,7 +5,9 @@ import os
 
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
+
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
 
 class Action(models.Model):
     user = models.ForeignKey(User)
@@ -21,7 +23,7 @@ class Action(models.Model):
             return ' rated <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
         elif self.what ==u'follow':
             u = User.objects.get(pk=self.gen_id)
-            return ' is now following <a href="/movie/profile/?u=%d">%s</a>'%(u.pk,u.username)
+            return ' is now following <a href="/movie/profile/?u=%d">%s</a>' %(u.pk,u.username)
         elif self.what=='recommend':
             item = Item.objects.get(pk=self.gen_id)
             return ' recommended <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
@@ -32,6 +34,8 @@ class Item(models.Model):
     #additional fields: isbn,author, director
 
     year = models.IntegerField('date published', null=True)
+    img = models.CharField(max_length=250,default="http://goo.gl/nSZUx")
+    description = models.TextField()
 
     @staticmethod
     def get_rated_by(user):
@@ -129,3 +133,13 @@ def generate_test():
             map(tagset.add,tagl) 
             for t in tagl:
                 Tag.objects.create(item=item,tag=t)
+
+class Comment(models.Model):
+
+    user = models.ForeignKey(User,related_name='+')
+    item = models.ForeignKey(Item)
+    comment = models.TextField()
+    commented_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table='%s_comment' % context

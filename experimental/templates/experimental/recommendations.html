@@ -1,6 +1,7 @@
 {% extends context|add:"/base.html" %}
 
 {% block body %}
+{{reclist|length}}
 {% if not reclist|length %}
 <p> You need to rate more than {{limit}} items to get recommendations.</p>
 <p> Please rate {{diff}} more items.</p>

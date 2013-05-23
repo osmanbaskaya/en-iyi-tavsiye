@@ -11,9 +11,11 @@
 </script>
 {% for act, obj in tuples %}
 <div style="min-height:200px;">
-<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>
-<div style="padding-left:1.5cm;">
+    <!--<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>-->
+<div style="">
+    {% if forloop.counter != 1 %}
     <hr style="margin-bottom:0.1cm;"/>
+    {% endif %}
         {% if act.what == 'rate' %}
         <span style="font-size:small;">
         <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
@@ -57,4 +59,4 @@
 </div>
 </div>
 {% endfor %}
-<button class="btn btn-primary" onclick="homemore(this,{{noffset}});">more</button>
+<!--<button class="btn btn-primary" onclick="homemore(this,{{noffset}});">more</button>-->

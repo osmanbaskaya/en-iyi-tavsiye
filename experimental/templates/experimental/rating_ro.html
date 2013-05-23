@@ -1,0 +1,6 @@
+<div style="cursor:default;padding:3px 3px 3px 3px" data-item="{{row.0.pk}}">
+{%for v in rlist %}
+<img {%if not row.1 %}class="gray-star rating"{% elif v <= row.1.rating %}class="yellow-star rating"{%else%}class="gray-star rating"{% endif %}
+{%if row.1 and row.1.rating == v %}data-selected{% endif %} data-n="{{v}}" data-item="{{row.0.pk}}" src="{{STATIC_URL}}img/transparent.png">
+{% endfor %}
+</div>

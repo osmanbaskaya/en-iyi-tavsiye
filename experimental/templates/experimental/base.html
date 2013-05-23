@@ -28,6 +28,18 @@
                 }
                 return { top: _y, left: _x };
             }
+            function bpopup(el){
+                function t(){popup(el);};
+                to = setTimeout(t,2000);
+                console.log('to:'+to);
+                $(el).data('to',to);
+            }
+            function cpopup(el){
+                to = $(el).data('to');
+                console.log('clearing to:'+to);
+                clearTimeout(to);
+                $('#thepopup').hide();
+            }
             function popup(el){
                 var w = $(el).width();
                 var h = $(el).height();
