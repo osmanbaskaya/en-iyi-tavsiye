@@ -1,0 +1,58 @@
+{% extends context|add:"/base.html" %}
+
+{% block body %}
+<script>
+    function comments(itemid){
+        $('#comments'+itemid).load('/{{context}}/home/comments/?itemid='+itemid);
+    }
+    function addcomment(itemid){
+        $.get('/{{context}}/home/comments/?itemid='+itemid+'&'+$('#commentform'+itemid).serialize(),function(res){
+            $('#comments'+itemid).html(res);
+        });
+    }
+</script>
+<div style="margin-left:100px;max-width:920px;">
+    <br>
+    <div style="float:left">
+        <img style="float:left;" width="214" height="317" src="{{item.img}}"/>
+        <div style="margin-left:6cm;max-width:500px;min-height:317px">
+        <div style="min-height:270px">
+            <span style="font-size:large;font-weight:lighter;">
+            <span style="color:#0088cc">{{ item.name }}</span> ({{ item.year }})
+            </span>
+            <div style="margin-bottom:0.7cm">
+            <div style="float:left;">
+            {% include context|add:"/rating.html" %} 
+            </div>
+            <div style="float:right;padding:3px">ratingc:{{ratingc}} reviewc:{{reviewc}}</div>
+        </div>
+        <hr style="margin-top:5px;margin-bottom:5px"/>
+        <span style="font-size:small">{{item.description}}</span><br>
+        <hr style="margin-top:5px;margin-bottom:5px"/>
+        <p>Director: Steven Spielberg</p>
+        <p>Writers: Michael Crichton (novel), Michael Crichton (screenplay)</p>
+        <p>Stars: Sam Neill, Laura Dern, Jeff Goldblum</p>
+        </div>
+        <button class="btn btn-primary">Watch Later</button>
+        <button class="btn btn-primary">Share</button>
+        </div>
+    </div>
+    <div style="max-width:180px;float:right;margin-top:3px;">
+    <h3>Similar Movies</h3>
+    {% for item in sim_items %}
+        <a href="/{{ context }}/detail/{{ item.pk }}/">
+        <img width="50" height="160" src="{{item.img}}"/></a>
+    {% endfor %}
+    </div>
+
+    <div style="min-width:727px;float:left;" id="comments{{item.pk}}">
+    <h3>Reviews</h3>
+    <div id="comments{{item.pk}}">
+    {% include context|add:"/item_comments.html" %}
+    </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

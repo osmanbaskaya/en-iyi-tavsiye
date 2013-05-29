@@ -1,0 +1,20 @@
+<div>
+<div>
+<img width="30px" height="60px" src="{{user.profile.pic_url}}"/>
+<button style="float:right" class="btn btn-primary" onclick="addcomment({{item.pk}});">Yorumla</button>
+</div>
+<form style="margin-top:5px;margin-bottom:0px;" id="commentform{{item.pk}}">
+    <textarea  rows="3" style="width:100%" name="comment"></textarea>
+</form>
+</div>
+{% for c in comments %}
+<div style="min-height:40px;width:100%;font-size:small;background-color:#D3D9EB;">
+    <img style="float:left" width="30px" height="60px" src="{{c.user.profile.pic_url}}"/>
+    <div style="margin-left:1cm;margin-bottom:5px">
+    {{c.comment}}
+    asdfasdf
+    asdfasdfadsf
+    asdfasd
+    </div>
+</div>
+{% endfor %}

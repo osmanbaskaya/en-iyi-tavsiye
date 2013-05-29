@@ -1,0 +1,20 @@
+img.gray-star
+{
+    width:16px;
+    height:16px;
+    /*background:url(star.gif) 0 48;*/
+    background:url('gray.gif');
+}
+img.yellow-star
+{
+    width:16px;
+    height:16px;
+    background:url('yellow.gif');
+}
+img.delete-btn
+{
+    width:16px;
+    height:16px;
+    background:url('delete.gif');
+}
+

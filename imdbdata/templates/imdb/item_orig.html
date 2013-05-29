@@ -1,0 +1,47 @@
+{% extends context|add:"/base.html" %}
+
+{% block body %}
+<script>
+    function comments(itemid){
+        $('#comments'+itemid).load('/{{context}}/home/comments/?itemid='+itemid);
+    }
+    function addcomment(itemid){
+        $.get('/{{context}}/home/comments/?itemid='+itemid+'&'+$('#commentform'+itemid).serialize(),function(res){
+            $('#comments'+itemid).html(res);
+        });
+    }
+</script>
+<div style="margin-left:50px;max-width:820px;">
+    <br>
+    <div style="float:left">
+        <img style="float:left;" width="214" height="317" src="{{item.img}}"/>
+        <div style="margin-left:6cm;max-width:500px;">
+            <span style="font-size:large;font-weight:lighter;">
+                <span style="color:#0088cc">{{ item.name }}</span> ({{ item.year }})
+            </span>
+        <div>
+        <hr style="margin-top:5px;margin-bottom:5px"/>
+        {% include context|add:"/rating.html" %}
+        <div>ratingc:{{ratingc}} reviewc:{{reviewc}}</div>
+        </div>
+        <hr style="margin-top:5px;margin-bottom:5px"/>
+        <span style="font-size:small">{{item.description}}</span><br>
+        <br>
+        <p>Director: Steven Spielberg</p>
+        <p>Writers: Michael Crichton (novel), Michael Crichton (screenplay)</p>
+        <p>Stars: Sam Neill, Laura Dern, Jeff Goldblum</p>
+        <button class="btn btn-primary">Watch Later</button>
+        <button class="btn btn-primary">Share</button>
+        </div>
+    </div>
+    <div style="max-width:50px;float:right;" id="comments{{item.pk}}">
+    <h3>Reviews</h3>
+    <div id="comments{{item.pk}}">
+    {% include context|add:"/home_comments.html" %}
+    </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

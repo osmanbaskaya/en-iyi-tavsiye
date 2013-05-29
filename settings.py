@@ -140,9 +140,10 @@ INSTALLED_APPS = (
     'bootstrap',
     'registration',
     'iface',
-    'movie',
-    'book',
-    'experimental',
+    #'movie',
+    #'book',
+    #'experimental',
+    'imdbdata',
 )
     
 ACCOUNT_ACTIVATION_DAYS = 7
