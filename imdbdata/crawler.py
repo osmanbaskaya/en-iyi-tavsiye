@@ -38,11 +38,13 @@ lang_reg = re.compile('language.*>(\w+)')
 country_reg = re.compile('country.*>(\w+)')
 rating_user_regex= re.compile('img width="102" height="12" alt="(\d+)/\d+" \
 src="http://i.media-imdb.com/images/showtimes/\d+.gif"><br><small>Author:</small>\
-<a href="/user/ur(\d+)/comments">')
+<a href="/user/ur(\d+)')
 
 #rating_regex = re.compile('img.* alt="(\d+)/\d+')
 #user_regex = re.compile('a href="/user/ur(.*)/comments')
 
+"""
+<img width="102" height="12" alt="1/10" src="http://i.media-imdb.com/images/showtimes/10.gif"><br><small>Author:</small><a href="/user/ur17767193/">jim-2379</a>"""
 
 def movie_details(movie_id):
 
@@ -142,16 +144,20 @@ def fetch_ratings(item):
     reviewc = item.imdb_reviewc
     
     imdb_id = '0' * (7 - len(imdb_id)) + imdb_id
+    print "Processing:", imdb_id
 
     #pairs = []
     counter = 0 
     for i in range(0, reviewc, 10):
         url = review_url.format(imdb_id,i)
         #f = urllib2.urlopen(url).read()
-        sleep(1)
+        sleep(0.5)
         res = req.get(url) 
-        f = res.content
-        r_u = rating_user_regex.findall(f.replace('\n', ''))
+        if res.status_code != 200:
+            print 'status code:', res.status_code, ' for imdb_id:', imdb_id
+            return
+        f = res.content.replace('\n', '')
+        r_u = rating_user_regex.findall(f)
         for r, iuser_id in r_u:
             r = int(r)
             assert len(r_u) <= 10
@@ -167,9 +173,7 @@ def fetch_ratings(item):
 
 def phase3():
     now = datetime.strftime(datetime.now(), "%H:%M:%S %d.%m.%Y")
-    print "Phase 3 started on {}: {} of \
-    items will be processed with {} threads"\
-                    .format(now, len(items), num_thread)
+    print "Phase 3 started on {}".format(now)
 
     cache =  {}
 
@@ -188,8 +192,11 @@ def phase3():
             r.save()
     print "Phase 3 finished on {}",format(now)
 
+
 def phase2():
-    num_thread = 5
+    #Rating.objects.all().delete()
+    #Item.objects.filter().update(is_processed=False, imdb_review_ratingc=0)
+    num_thread = 9
     items = Item.objects.filter(is_processed=False)
     now = datetime.strftime(datetime.now(), "%H:%M:%S %d.%m.%Y")
     print "Phase 2 started on {}: {} of \
