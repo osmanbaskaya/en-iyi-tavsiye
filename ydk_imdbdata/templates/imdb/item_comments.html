@@ -1,0 +1,36 @@
+{% load extras %}
+{% for c in comments %}
+<div style="width:80%;">
+<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{c.user.profile.pic_url}}"></div>
+<div style="padding-left:1.5cm;">
+<hr style="margin-bottom:0.1cm;"/>
+    <div style="width:80%">
+        <div style="float:left;padding:3px;padding-right:5px;font-size:small;">
+            <a href="/{{ context }}/profile/?u={{c.user.id}}">{{c.user.username}}</a> rated it
+        </div>
+        <div style="zoom:0.8;max-width:240px">
+            {% include context|add:"/rating.html" %}
+        </div>
+
+        <div style="color:#999;font-size:x-small;float:right">
+                {{"2013-04-11 18:53:39"|dthumanize}}
+        </div>
+
+        <div style="margin-top:0.2cm;margin-left:0.1cm">
+        {{c.comment}}
+        </div>
+    </div>
+</div>
+</div>
+{% endfor %}
+
+<hr style="margin-top:5px;margin-bottom:5px"/>
+<div style="float:left;margin-top:6px">
+    <form id="commentform{{item.pk}}">
+        <div style="float:left;width:600px">
+            <img width="30px" height="60px" src="{{user.profile.pic_url}}"/>
+            <textarea  rows="5" style="width:400px" name="comment"></textarea>
+        </div>
+    </form>
+    <button class="btn btn-primary" onclick="addcomment({{item.pk}});">Send a review!</button>
+</div>

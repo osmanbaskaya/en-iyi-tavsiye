@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from iface.models import UserProfile
-from jsonfield import JSONField
 import os
 
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
@@ -11,7 +10,7 @@ User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
 class Action(models.Model):
-    user = models.ForeignKey(User,related_name='+')
+    user = models.ForeignKey(User)
     what = models.CharField(max_length=50)
     when = models.DateTimeField(auto_now_add=True)
     gen_id = models.IntegerField()
@@ -30,27 +29,13 @@ class Action(models.Model):
             return ' recommended <a href="/movie/detail/%d/">%s</a>'%(item.pk,item.name)
 
 class Item(models.Model):
-    name = models.CharField(max_length=250)
-    tr_name = models.CharField(max_length=250)
-    language = models.CharField(max_length=50)
-    genres = JSONField(default=[])
-    director = models.CharField(max_length=250)
-    description = models.TextField()
-    plot = JSONField(default=[])
-    stars = JSONField(default=[])
-    writers = JSONField(default=[])
-    year = models.IntegerField('date published')
+    name = models.TextField()
+
+    #additional fields: isbn,author, director
+
+    year = models.IntegerField('date published', null=True)
     img = models.CharField(max_length=250,default="http://goo.gl/nSZUx")
-    runtime = models.IntegerField()
-
-    imdb_id = models.CharField(max_length=50)
-    imdb_rating = models.FloatField()
-    imdb_ratingc = models.IntegerField(default=0)
-    imdb_reviewc = models.IntegerField(default=0)
-    imdb_review_ratingc = models.IntegerField(default=0)
-
-    is_processed = models.BooleanField(default=False)
-
+    description = models.TextField()
 
     @staticmethod
     def get_rated_by(user):
@@ -68,19 +53,17 @@ class Item(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey(User, related_name='follow_follower')
-    followee = models.ForeignKey(User, related_name='follow_followee')
+    follower = models.ForeignKey(User)
+    followee = models.ForeignKey(User)
 
     class Meta:
         db_table='%s_follow' % context
 
 class Rating(models.Model):
-    user = models.ForeignKey(User,null=True,related_name='+')
+    user = models.ForeignKey(User,related_name='+')
     item = models.ForeignKey(Item)
     rating = models.IntegerField()
     #rated_on = models.DateTimeField(auto_now_add=True)
-    imdb_user_id = models.CharField(db_index=True,max_length=50)
-    imdb_rating = models.IntegerField()
 
     @staticmethod
     def get_ratings_of(user):
@@ -100,7 +83,7 @@ class TagName(models.Model):
         db_table='%s_tagname' % context
 
 class UserRec(models.Model):
-    user = models.ForeignKey(User,related_name='+')
+    user = models.ForeignKey(User)
     item = models.ForeignKey(Item)
     comment = models.CharField(max_length=150,blank=True)
     class Meta:

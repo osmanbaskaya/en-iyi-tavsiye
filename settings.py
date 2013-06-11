@@ -142,7 +142,7 @@ INSTALLED_APPS = (
     'iface',
     #'movie',
     #'book',
-    #'experimental',
+    'experimental',
     'imdbdata',
 )
     

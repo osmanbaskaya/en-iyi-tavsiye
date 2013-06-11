@@ -1,0 +1,69 @@
+{% extends context|add:"/base.html" %}
+
+{% block body %}
+{{reclist|length}}
+{% if not reclist|length %}
+<p> You need to rate more than {{limit}} items to get recommendations.</p>
+<p> Please rate {{diff}} more items.</p>
+{% else %}
+<script>
+    results = [
+    {% for item, pre, norm in reclist %}
+    {pk:{{item.pk}},title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
+    {% endfor %}
+    ];
+    function more(){
+        for(var i=0; i<5 && results.length>0; i++){
+            res = results.pop();
+            /*
+            rowstr = 
+                '<td> <a href="/{{ context }}/detail/'+res.pk+'">'+res.title+'</a>'+
+                '</td> <td> <div class="btn-group" data-toggle="buttons-radio">';
+                    for(var v=1;v<=5;v++){
+                        rowstr+=
+                    '<input name="rgroup_'+res.pk+'" type="radio"'+
+                    'onclick="rate('+res.pk+','+v+');" >'+v
+                    }
+                    rowstr+='</div></td>';
+            */
+            rowstr = '<td> <a href="/{{context}}/detail/'+res.pk+'">'+res.title+'</a> </td>'+
+            '<td> <div style="cursor:default;max-width:120px;padding:3px 3px 3px 3px" data-item="'+res.pk+'">';
+            for(var v=1;v<=5;v++){
+                rowstr +=
+                '<img class="gray-star rating" data-n="'+v+'" data-item="'+res.pk+'" onmouseover="imghover(this);" onmouseout="imgmouseout(this);" onclick="imgclick(this);" src="/static/img/transparent.png">';
+            }
+            rowstr+=
+            '<img style="display:none" class="delete-btn" data-n="-1" data-item="'+res.pk+'" src="/static/img/transparent.png" onclick="imgdelclick(this);"> </div></td>';
+            $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
+        }
+
+        if(results.length ==0) $('#more_btn').attr('disabled','');
+    }
+    $(function(){
+        more();
+    });
+    function reclist(q){
+        $('#main').html('');
+        $('#more_btn').removeAttr('disabled');
+        $.getJSON('/{{ context }}/reclist/?'+q,function(obj){results=obj;more();});
+    }
+</script>
+<form id="tags">
+<input type="checkbox" name="tag" value="sci-fi">sci-fi
+<input type="checkbox" name="tag" value="drama">drama
+<input type="checkbox" name="tag" value="fantasy">fantasy
+<input type="checkbox" name="tag" value="action">action
+<input type="checkbox" name="tag" value="thriller">thriller
+</form>
+<button id="filter_btn" onclick="reclist($('#tags').serialize());" >filter</button>
+<button id="clear_btn" onclick="reclist('');$('input:checked').removeAttr('checked');" >clear</button>
+
+<h2> Recommendations for {{ user.username }} </h2>
+<br\><br\>
+
+
+<table id="main" >
+</table>
+<button id="more_btn" onclick="more();" >more</button>
+{% endif %}
+{% endblock %}
