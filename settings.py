@@ -140,7 +140,7 @@ INSTALLED_APPS = (
     'bootstrap',
     'registration',
     'iface',
-    #'movie',
+    'movie',
     #'book',
     'experimental',
     'imdbdata',
