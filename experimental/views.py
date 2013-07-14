@@ -43,11 +43,9 @@ def reclist(request):
     taglist = request.GET.getlist('tag')
     w = WebService(context)
     resp = w.get_recs(request.user.pk,','.join(taglist))
-    reclist =[]
-    for r in resp:
-        sitem_id, pre = r.split(';')
+    for sitem_id, pre in resp:
         reclist.append({'pk':int(sitem_id),'title':Item.objects.get(pk=int(sitem_id)).name,
-            'p':round(float(pre)),'normp':0})
+            'p':(pre),'normp':0})
     reclist.reverse()
     return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
@@ -185,10 +183,9 @@ def get_rec(request):
     if  rcount > limit:
         w = WebService(context)
         resp = w.get_recs(request.user.pk)
-        for r in resp:
-            sitem_id, pre = r.split(';')
+        for sitem_id, pre in resp:
             reclist.append((Item.objects.get(pk=int(sitem_id)),
-                round(float(pre)),0))
+                ((pre)),0))
         reclist.reverse()
     return render(request, context + '/recommendations.html', {
         'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
@@ -239,10 +236,16 @@ def detail(request,pk):
     else:
         userrec=None'''
 
+
+    pred = 0
+    w = WebService(context)
     if Rating.objects.filter(user=request.user,item=item).exists():
         rating = Rating.objects.get(user=request.user,item=item)
     else:
-        rating = Rating(user=request.user,item=item,rating=random.randint(1,5))
+        pred = w.estimate_pref(request.user.id, item.id)
+        pred = max(pred, 1)
+        pred = min(pred, 5)
+        rating = Rating(user=request.user,item=item,rating=0)
     row = (item,rating)
 
     ratingc = Rating.objects.filter(item=item).count()
@@ -251,12 +254,11 @@ def detail(request,pk):
     comments = Comment.objects.filter(item=item)
     
     sim_items = random.sample(Item.objects.all(), 6)
-    
 
     return render(request,context + '/item.html',{
         'context':context,'status':str(res),'item':item,
         'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
-        'comments':comments, 'sim_items':sim_items})
+        'comments':comments, 'sim_items':sim_items,'pred':pred})
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')

@@ -19,7 +19,14 @@ from movie.models import User
 import time
 URL = 'http://54.246.115.200:8080/RecommenderEngine/RecommenderWS?wsdl'
 
-
+def refine_reclist(resp):
+    rec_list = []
+    for r in resp:
+        sitem_id, pre = r.split(';')
+        pre = min(float(pre), 5)
+        pre = max(1, pre)
+        rec_list.append((sitem_id, pre))
+    return rec_list
 
 class WebService(object):
 
@@ -77,11 +84,14 @@ class WebService(object):
         self._client.service.test()
 
     def get_recs(self, user_id, tags='', offset=0, limit=100):
-        return self._client.service.getRecommendationListPaginated(self.context,
+        resp = self._client.service.getRecommendationListPaginated(self.context,
                 user_id,
                 tags,
                 offset,
                 limit)
+
+        return refine_reclist(resp)
+
 
     def add_pref(self, user_id, item_id, rating):
         self._client.service.addPreference(self.context,
@@ -119,7 +129,8 @@ class WebService(object):
             if self.is_model_alive():
                 t = int(time.time())
                 #return self._client.service.getRecommendationList(user_id, self.context, t)[:n]
-                return self._client.service.getRecommendationList(self.context,user_id)[:n]
+                rec_list = self._client.service.getRecommendationList(self.context,user_id)[:n]
+                return refine_reclist(rec_list)
             else:
                 self.train_model()
                 return self.get_recommendations(user_id, n)
@@ -129,9 +140,12 @@ class WebService(object):
 
     def get_nearestneighbors(self, user_id):
         return self._client.service.getUserNearestNeighborList(self.context, user_id)[:10]
-        
 
 
+    def estimate_pref(self, user_id, item_id):
+        pred = max(self._client.service.estimatePreference(self.context, user_id, item_id), 1)
+        pred = min(5, pred)
+        return pred
 
 def build_whole_ISM():
     w = WebService()
