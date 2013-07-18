@@ -6,6 +6,10 @@ __date__ = '26.07.2012'
 
 import os
 import sys
+from suds.client import Client
+from movie.models import User
+import time
+from urllib2 import URLError
 
 
 location = os.path.dirname(os.path.join(os.getcwd(), __file__)).rsplit('/', 1)[0]
@@ -14,9 +18,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.append(location)
 
 
-from suds.client import Client
-from movie.models import User
-import time
 URL = 'http://54.246.115.200:8080/RecommenderEngine/RecommenderWS?wsdl'
 
 def refine_reclist(resp):
@@ -49,8 +50,13 @@ class WebService(object):
     def connect(self):
         if self._client is None:
             print 'Connecting to webserver.. Please wait.'
-            self._client = Client(self.url)
+            timeout = 15
+            if self.context == 'experimental':
+                timeout = 1
+            self._client = Client(self.url, timeout=timeout)
             print 'Connection established.'
+        else:
+            print "Already connected"
 
     def isConnected(self):
         return self._client is not None
@@ -84,11 +90,11 @@ class WebService(object):
         self._client.service.test()
 
     def get_recs(self, user_id, tags='', offset=0, limit=100):
-        resp = self._client.service.getRecommendationListPaginated(self.context,
-                user_id,
-                tags,
-                offset,
-                limit)
+        try:
+            resp = self._client.service.getRecommendationListPaginated(self.context,
+                    user_id, tags, offset, limit)
+        except URLError:
+            return []
 
         return refine_reclist(resp)
 
@@ -105,7 +111,6 @@ class WebService(object):
                 user_id,
                 item_id,
                 rating)
-
 
     def change_pref(self, user_id, item_id, rating):
         
@@ -139,13 +144,18 @@ class WebService(object):
             return self.get_recommendations(user_id, n)
 
     def get_nearestneighbors(self, user_id):
+        print "trying to find nearest neighbors"
         return self._client.service.getUserNearestNeighborList(self.context, user_id)[:10]
 
 
     def estimate_pref(self, user_id, item_id):
-        pred = max(self._client.service.estimatePreference(self.context, user_id, item_id), 1)
-        pred = min(5, pred)
-        return pred
+        try:
+            p = self._client.service.estimatePreference(self.context, user_id, item_id)
+        except URLError:
+            return -1
+        reclist = refine_reclist([p])
+        return reclist[0]
+
 
 def build_whole_ISM():
     w = WebService()
