@@ -255,10 +255,10 @@ def detail(request,pk):
     sim_items = random.sample(Item.objects.all(), 6)
     
 
-    return render(request,context + '/item.html',{
-        'context':context,'status':str(res),'item':item,
-        'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
-        'comments':comments, 'sim_items':sim_items})
+    #return render(request,context + '/item.html',{
+        #'context':context,'status':str(res),'item':item,
+        #'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
+        #'comments':comments, 'sim_items':sim_items})
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')
