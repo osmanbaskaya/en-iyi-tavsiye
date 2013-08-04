@@ -57,7 +57,7 @@ def home_comments(request):
         comment = request.GET.get('comment')
         Comment.objects.create(user=request.user,item=item,comment=comment)
 
-    comments = Comment.objects.filter(item=item)
+    comments = Comment.objects.filter(item=item).order_by('-id')
     return render(request, context + '/home_comments.html',{'context':context,
         'comments':comments,'item':item})
 @login_required(login_url='/login/')
@@ -179,7 +179,7 @@ def feedrec(request):
 def get_rec(request):
     reclist =[]
     limit = 10
-    rcount = Rating.objects.filter(user=request.user).count()
+    rcount = Rating.objects.filter(user=request.user).count() - limit + 1
     if  rcount > limit:
         w = WebService(context)
         resp = w.get_recs(request.user.pk)
@@ -189,7 +189,7 @@ def get_rec(request):
         reclist.reverse()
     return render(request, context + '/recommendations.html', {
         'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
-        'limit':limit,'diff':limit-rcount,
+        'limit':limit,'diff':limit-rcount, 'rcount': rcount,
         })
 
 
@@ -236,29 +236,31 @@ def detail(request,pk):
     else:
         userrec=None'''
 
-
     pred = 0
     w = WebService(context)
     if Rating.objects.filter(user=request.user,item=item).exists():
         rating = Rating.objects.get(user=request.user,item=item)
     else:
         pred = w.estimate_pref(request.user.id, item.id)
-        pred = max(pred, 1)
-        pred = min(pred, 5)
+        #pred = max(pred, 1)
+        #pred = min(pred, 5)
         rating = Rating(user=request.user,item=item,rating=0)
     row = (item,rating)
 
     ratingc = Rating.objects.filter(item=item).count()
     reviewc = Comment.objects.filter(item=item).count()
 
-    comments = Comment.objects.filter(item=item)
+    comments = Comment.objects.filter(item=item).order_by('-id')
+    is_commented = Comment.objects.filter(item=item, user=request.user).exists()
+    is_commented = False
     
     sim_items = random.sample(Item.objects.all(), 6)
 
     return render(request,context + '/item.html',{
         'context':context,'status':str(res),'item':item,
         'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
-        'comments':comments, 'sim_items':sim_items,'pred':pred})
+        'comments':comments, 'sim_items':sim_items,'pred':pred, 
+        'is_commented': is_commented})
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')

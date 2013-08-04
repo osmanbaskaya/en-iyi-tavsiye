@@ -1,11 +1,9 @@
 # Create your views here.
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from models import *
 from forms import UnratedForm, RatingForm, RecommendationForm
 from django.contrib.auth.decorators import login_required
-from django.forms.formsets import formset_factory
-from django.forms.models import modelformset_factory
 import json
 from webservice import WebService
 import random
@@ -45,11 +43,9 @@ def reclist(request):
     taglist = request.GET.getlist('tag')
     w = WebService(context)
     resp = w.get_recs(request.user.pk,','.join(taglist))
-    reclist =[]
-    for r in resp:
-        sitem_id, pre = r.split(';')
+    for sitem_id, pre in resp:
         reclist.append({'pk':int(sitem_id),'title':Item.objects.get(pk=int(sitem_id)).name,
-            'p':round(float(pre)),'normp':0})
+            'p':(pre),'normp':0})
     reclist.reverse()
     return HttpResponse(json.dumps(reclist),mimetype="application/json")
 
@@ -61,7 +57,7 @@ def home_comments(request):
         comment = request.GET.get('comment')
         Comment.objects.create(user=request.user,item=item,comment=comment)
 
-    comments = Comment.objects.filter(item=item)
+    comments = Comment.objects.filter(item=item).order_by('-id')
     return render(request, context + '/home_comments.html',{'context':context,
         'comments':comments,'item':item})
 @login_required(login_url='/login/')
@@ -118,7 +114,7 @@ def home(request):
         elif ac.what == 'recommend':
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
-    return render(request, context + '/home_orig.html',{'context':context,'tuples':tuples, 'noffset':limit+offset,'fusers':getneighbors(request.user)})
+    return render(request, context + '/home.html',{'context':context,'tuples':tuples, 'noffset':limit+offset,'fusers':getneighbors(request.user)})
 
 @login_required(login_url='/login/')
 def home_more(request):
@@ -168,7 +164,7 @@ def rate(request):
 def feedrec(request):
     n=10
     unrated_items= Item.get_unrated_by(request.user)
-    from random import sample, randint
+    from random import sample
     k = unrated_items.count() - n
     if k > 0:
         unrated_items = sample(unrated_items, n)
@@ -183,18 +179,17 @@ def feedrec(request):
 def get_rec(request):
     reclist =[]
     limit = 10
-    rcount = Rating.objects.filter(user=request.user).count()
+    rcount = Rating.objects.filter(user=request.user).count() - limit + 1
     if  rcount > limit:
         w = WebService(context)
         resp = w.get_recs(request.user.pk)
-        for r in resp:
-            sitem_id, pre = r.split(';')
+        for sitem_id, pre in resp:
             reclist.append((Item.objects.get(pk=int(sitem_id)),
-                round(float(pre)),0))
+                ((pre)),0))
         reclist.reverse()
     return render(request, context + '/recommendations.html', {
         'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
-        'limit':limit,'diff':limit-rcount,
+        'limit':limit,'diff':limit-rcount, 'rcount': rcount,
         })
 
 
@@ -241,24 +236,31 @@ def detail(request,pk):
     else:
         userrec=None'''
 
+    pred = 0
+    w = WebService(context)
     if Rating.objects.filter(user=request.user,item=item).exists():
         rating = Rating.objects.get(user=request.user,item=item)
     else:
-        rating = Rating(user=request.user,item=item,rating=random.randint(1,5))
+        pred = w.estimate_pref(request.user.id, item.id)
+        #pred = max(pred, 1)
+        #pred = min(pred, 5)
+        rating = Rating(user=request.user,item=item,rating=0)
     row = (item,rating)
 
     ratingc = Rating.objects.filter(item=item).count()
     reviewc = Comment.objects.filter(item=item).count()
 
-    comments = Comment.objects.filter(item=item)
+    comments = Comment.objects.filter(item=item).order_by('-id')
+    is_commented = Comment.objects.filter(item=item, user=request.user).exists()
+    is_commented = False
     
     sim_items = random.sample(Item.objects.all(), 6)
-    
 
-    #return render(request,context + '/item.html',{
-        #'context':context,'status':str(res),'item':item,
-        #'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
-        #'comments':comments, 'sim_items':sim_items})
+    return render(request,context + '/item.html',{
+        'context':context,'status':str(res),'item':item,
+        'row':row,'ratingc':ratingc,'reviewc':reviewc,'rlist':xrange(1,6),
+        'comments':comments, 'sim_items':sim_items,'pred':pred, 
+        'is_commented': is_commented})
     #return render(request,context + '/item.html',{})
 
 @login_required(login_url='/login/')
@@ -269,9 +271,29 @@ def profile_ratings(request):
     for r in ratings:
         rows.append((r.item,r))
 
-    return render(request, context + '/profile_ratings.html', {
-        'context':context,'rows':rows,
+    return render(request, context + '/profile/ratings.html', {
+        'context':context,'rows':rows,'rlist':range(1,6)
         })
+
+
+@login_required(login_url='/login/')
+def profile_comments(request):
+    user = request.user
+    comments = Comment.objects.filter(user=user)
+    comments.reverse()
+    ratings = Rating.objects.filter(user=user)
+    rows =[]
+    for c in comments:
+        rating = None
+        for r in ratings:
+            if c.item_id == r.id:
+                rating = r.rating
+        rows.append((c, rating))
+
+    return render(request, context + '/profile/comments.html', {
+        'context':context,'rows':rows,'rlist':range(1,6)
+        })
+
 @login_required(login_url='/login/')
 def profile_users(request):
     from random import randint
@@ -293,7 +315,7 @@ def profile_users(request):
             f = Follow(follower=request.user,followee=u)
         rows.append((u,f,randint(0,100)))
 
-    return render(request, context + '/profile_users.html', {
+    return render(request, context + '/profile/fusers.html', {
         'context':context,'rows': rows, 
         'auser': user,'user':request.user,
         })
@@ -301,8 +323,10 @@ def profile_users(request):
 @login_required(login_url='/login/')
 def profile(request):
     if request.GET.get('u'):
+        is_self = False
         user = User.objects.get(pk=request.GET.get('u'))
     else:
+        is_self = True
         user = request.user
     ratings=Rating.objects.filter(user=user)
     ratings.reverse()
@@ -340,9 +364,13 @@ def profile(request):
             tuples.append((ac,Item.objects.get(pk=ac.gen_id)))
 
 
-    return render(request, context + '/profile.html', {
+    if is_self:
+        tname = '/profile/index_self.html'
+    else:
+        tname = '/profile/index.html'
+    return render(request, context + tname, {
         'context':context,'recs': recs, 'followees': followees,'followers':followers, 
-        'auser': user,'user':request.user, 'f': f,'rows':rows,'rlist':range(1,6),
+        'user':user, 'f': f,'rows':rows,'rlist':range(1,6),
         'sim_users': sim_users, 'tuples' : tuples,'noffset':limit+offset,
         })
 

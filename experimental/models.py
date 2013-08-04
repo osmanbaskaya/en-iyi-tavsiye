@@ -36,6 +36,7 @@ class Item(models.Model):
     year = models.IntegerField('date published', null=True)
     img = models.CharField(max_length=250,default="http://goo.gl/nSZUx")
     description = models.TextField()
+    num_rating = models.IntegerField(default=0)
 
     @staticmethod
     def get_rated_by(user):

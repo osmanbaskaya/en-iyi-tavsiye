@@ -1,4 +1,21 @@
 {% load extras %}
+
+{% if not is_commented %}
+<hr style="margin-top:5px;margin-bottom:5px"/>
+<div style="float:left;margin-top:6px">
+    <form id="commentform{{item.pk}}">
+        <div style="float:left;width:600px">
+            <img width="30px" height="60px" src="{{user.profile.pic_url}}"/>
+            <textarea  rows="5" style="width:400px" name="comment"></textarea>
+        </div>
+    </form>
+    <button class="btn btn-primary" onclick="addcomment({{item.pk}});">Send a review!</button>
+</div>
+{% else %}
+You have already commented. Please consider editing.
+{% endif %}
+
+
 {% for c in comments %}
 <div style="width:80%;">
 <div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{c.user.profile.pic_url}}"></div>
@@ -24,13 +41,3 @@
 </div>
 {% endfor %}
 
-<hr style="margin-top:5px;margin-bottom:5px"/>
-<div style="float:left;margin-top:6px">
-    <form id="commentform{{item.pk}}">
-        <div style="float:left;width:600px">
-            <img width="30px" height="60px" src="{{user.profile.pic_url}}"/>
-            <textarea  rows="5" style="width:400px" name="comment"></textarea>
-        </div>
-    </form>
-    <button class="btn btn-primary" onclick="addcomment({{item.pk}});">Send a review!</button>
-</div>

@@ -2,8 +2,8 @@
 
 {% block body %}
 {{reclist|length}}
-{% if not reclist|length %}
-<p> You need to rate more than {{limit}} items to get recommendations.</p>
+{% if rcount < 1 %}
+<p> You need to rate at least {{limit}} items to get recommendations.</p>
 <p> Please rate {{diff}} more items.</p>
 {% else %}
 <script>
@@ -34,6 +34,7 @@
             }
             rowstr+=
             '<img style="display:none" class="delete-btn" data-n="-1" data-item="'+res.pk+'" src="/static/img/transparent.png" onclick="imgdelclick(this);"> </div></td>';
+            rowstr+= '<td>' + res.p + '</td>';
             $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
         }
 
@@ -60,7 +61,6 @@
 
 <h2> Recommendations for {{ user.username }} </h2>
 <br\><br\>
-
 
 <table id="main" >
 </table>

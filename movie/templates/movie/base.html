@@ -28,6 +28,18 @@
                 }
                 return { top: _y, left: _x };
             }
+            function bpopup(el){
+                function t(){popup(el);};
+                to = setTimeout(t,2000);
+                console.log('to:'+to);
+                $(el).data('to',to);
+            }
+            function cpopup(el){
+                to = $(el).data('to');
+                console.log('clearing to:'+to);
+                clearTimeout(to);
+                $('#thepopup').hide();
+            }
             function popup(el){
                 var w = $(el).width();
                 var h = $(el).height();
@@ -166,6 +178,7 @@
               <ul class="nav nav-tabs">
                   <li {% if context == 'movie' %}class="active"{% endif %}> <a href="/movie/home">Movie</a> </li>
                   <li {% if context == 'experimental' %}class="active"{% endif %}><a href="/experimental/home">Exp</a></li>
+                  <li {% if context == 'imdbdata' %}class="active"{% endif %}> <a href="/imdbdata/home">Imdb</a> </li>
                   <!--<li><a href="/music/home">Music</a></li>-->
                   <form style="float:right" id="search_form" action="/{{ context }}/search/" class="navbar-search pull-right">
                       <input type="text" name="q" class="search-query" placeholder="Search"/>
