@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from webservice import WebService
 import random
+from random import sample
 
 #constants
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
@@ -163,17 +164,20 @@ def rate(request):
 @login_required(login_url='/login/')
 def feedrec(request):
     n=10
-    unrated_items= Item.get_unrated_by(request.user)
-    from random import sample
+    unrated_items = Item.get_unrated_by(request.user).order_by('-num_rating')
     k = unrated_items.count() - n
+    feed = []
     if k > 0:
-        unrated_items = sample(unrated_items, n)
+        #unrated_items.sort(key=lambda item: item.num_rating, reverse=True)
+        feed.extend(sample(unrated_items[:250], 3))
+        feed.extend(sample(unrated_items[250:500], 2))
+        feed.extend(sample(unrated_items[500:], n-len(feed)))
 
     rows=[]
-    for item in unrated_items:
+    for item in feed:
         rows.append((item,None))
     c = {'context':context,'user':request.user,'rlist':xrange(1,6), 'rows':rows}
-    return render(request, context + '/ratings.html',c)
+    return render(request, context + '/ratings.html', c)
 
 @login_required(login_url='/login/')
 def get_rec(request):

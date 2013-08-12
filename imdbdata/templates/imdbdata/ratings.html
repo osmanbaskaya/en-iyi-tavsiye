@@ -5,18 +5,24 @@
 
 Number of movies : {{ rows|length }}
 <table>
+
+<colgroup>
+<col span="1" style="width: 10%;">
+<col span="1" style="width: 15%;">
+<col span="1" style="width: 15%;">
+<col span="1" style="width: 55%;">
+</colgroup>
 {% for row in rows %}
 <tr id="row{{row.0.pk}}">
     <td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>
-    <td align="center">  <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}}</a> </td>
+    <td align="center">  <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}} ({{row.0.year}}) </a> </td>
+
     <td>
     {% include context|add:"/rating.html" %}
     </td>
+
+    <td align="left"> {{ row.0.description }} </td>
 </tr>
 {% endfor %}
 </table>
 {% endblock %}
-
-
-  <!--
-  -->

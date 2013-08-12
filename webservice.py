@@ -67,16 +67,6 @@ class WebService(object):
         else:
             print 'You should connect with %s..' % self.url
 
-    def train_model(self):
-        if self.isConnected():
-            print 'Building...'
-            self.fetch_model()
-            self._client.service.buildModel(self.context,'',10,10)
-            print '%s has been built successfully' % self.context
-        else:
-            self.connect()
-            self.train_model()
-
     def fetch_model(self):
         if self.isConnected():
             print 'Building...'

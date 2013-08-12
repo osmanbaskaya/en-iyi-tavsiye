@@ -169,7 +169,8 @@ def feedrec(request):
     feed = []
     if k > 0:
         #unrated_items.sort(key=lambda item: item.num_rating, reverse=True)
-        feed.extend(sample(unrated_items[:500], 5))
+        feed.extend(sample(unrated_items[:250], 3))
+        feed.extend(sample(unrated_items[250:500], 2))
         feed.extend(sample(unrated_items[500:], n-len(feed)))
 
     rows=[]
