@@ -22,6 +22,9 @@
             </span>
             <div style="margin-bottom:0.7cm">
             <div style="float:left;">
+            {% if pred != 0 and pred %}
+                Prediction for you: {{pred}}
+            {% endif %}
             {% include context|add:"/rating.html" %} 
             </div>
             <div style="float:right;padding:3px">ratingc:{{ratingc}} reviewc:{{reviewc}}</div>
@@ -44,6 +47,8 @@
         <img width="50" height="160" src="{{item.img}}"/></a>
     {% endfor %}
     </div>
+
+
 
     <div style="min-width:727px;float:left;" id="comments{{item.pk}}">
     <h3>Reviews</h3>

@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
-
+from django.contrib.auth.models import User
 from registration.views import register
 
 def log_in(request):
@@ -19,23 +19,32 @@ def log_in(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password1']
+	fblogin = request.POST['fblogin']
+	if fblogin == '1':
+	    password = '1234'
+ 
         if password == '' or username == '':
-            return render_to_response('login.html', {'error_message':
-                'Both Username and password should be filled'},
-                context_instance=RequestContext(request))
-        else:
-            user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect('/experimental/profile/')
-            else:
-                return render_to_response('login.html', {'error_message': 
-                                                    'blocked account'})
-        else:
-            return render_to_response('login.html', {'error_message':
-                'Username or password wrong.'},
-                context_instance=RequestContext(request))
+	    return render_to_response('login.html', {'error_message':
+               	 'Both Username and password should be filled'},
+           context_instance=RequestContext(request))
+	else:
+       	    user = authenticate(username=username, password=password)
+
+	    if user is None and fblogin == '1' :
+		User.objects.create_user(username,username,password)
+	        user = authenticate(username=username, password=password)
+
+	    if user is not None:
+      		if user.is_active:
+	            login(request, user)
+        	    return HttpResponseRedirect('/experimental/profile/')
+	        else:
+	            return render_to_response('login.html', {'error_message': 
+                                                   'blocked account'})
+	    else:
+	        return render_to_response('login.html', {'error_message':
+	                'Username or password wrong.'},
+	                context_instance=RequestContext(request))
     else:
         return django.contrib.auth.views.login(request, template_name='login.html')
 
@@ -45,10 +54,9 @@ def log_in(request):
 #print "entering django login"
         #return django.contrib.auth.views.login(request, template_name='login.html')
 
-@login_required(login_url='/login/')
 def exit(request):
     logout(request)
-    return HttpResponseRedirect('/login/')
+    return HttpResponseRedirect('/accounts/register?logout=1')
 
 def create_account(request):
     if request.user.is_anonymous():

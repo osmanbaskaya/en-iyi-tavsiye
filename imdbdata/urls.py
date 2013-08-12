@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'reclist','%s.views.reclist'%context),
     url(r'search/','%s.views.search'%context),
     url(r'user_popover/','%s.views.user_popover'%context),
-    url(r'detail/(?P<pk>\w+)/','%s.views.detail'%context),
+    url(r'detail/(?P<pk>\d+)/','%s.views.detail'%context),
     # Examples:
     # url(r'^$', 'web.views.home', name='home'),
     # url(r'^web/', include('web.foo.urls')),
