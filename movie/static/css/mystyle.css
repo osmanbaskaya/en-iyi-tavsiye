@@ -27,3 +27,13 @@ img.feed_img_item {
     height: 140px;
     width: 100px;
 }
+
+img.small_img_item {
+    height: 35px;
+    width: 25px;
+}
+
+tr.space_under > td
+{
+      padding-bottom: 1em;
+}

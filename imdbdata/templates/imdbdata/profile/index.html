@@ -1,4 +1,5 @@
 {% extends context|add:"/base.html" %}
+{% load staticfiles %}
 
 {% block body %}
 
@@ -28,8 +29,7 @@
             </span>
             </br>
             {% for row in rows|slice:":12" %}
-                <a href=""><img width="25px" 
-                src="{{ row.0.img }}"/></a>
+                <a href=""><img class="small_img_item" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/></a>
             {% endfor %}
             </br>
             </br>

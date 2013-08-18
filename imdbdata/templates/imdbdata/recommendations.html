@@ -1,15 +1,17 @@
 {% extends context|add:"/base.html" %}
+{% load staticfiles %}
 
 {% block body %}
 {{reclist|length}}
-{% if rcount < 1 %}
+{% if diff < 0 %}
 <p> You need to rate at least {{limit}} items to get recommendations.</p>
+<p> You rated {{rcount}} items. </p>
 <p> Please rate {{diff}} more items.</p>
 {% else %}
 <script>
     results = [
     {% for item, pre, norm in reclist %}
-    {pk:{{item.pk}},title:"{{item.name}}",p:{{pre}},normp:{{norm}}},
+    {pk:{{item.pk}},title:"{{item.name}}",p:{{pre}},normp:{{norm}},director:"{{item.director}}",stars:"{{item.get_stars}}", img:"{% static "item-imgs/" %}{{item.id}}.jpg"},
     {% endfor %}
     ];
     function more(){
@@ -26,7 +28,8 @@
                     }
                     rowstr+='</div></td>';
             */
-            rowstr = '<td> <a href="/{{context}}/detail/'+res.pk+'">'+res.title+'</a> </td>'+
+            rowstr = '<td> <img class="home_img_item" src=' + res.img + '> </td>';
+            rowstr += '<td> <a href="/{{context}}/detail/'+res.pk+'">'+res.title+'</a> </td>'+
             '<td> <div style="cursor:default;max-width:120px;padding:3px 3px 3px 3px" data-item="'+res.pk+'">';
             for(var v=1;v<=5;v++){
                 rowstr +=
@@ -35,7 +38,9 @@
             rowstr+=
             '<img style="display:none" class="delete-btn" data-n="-1" data-item="'+res.pk+'" src="/static/img/transparent.png" onclick="imgdelclick(this);"> </div></td>';
             rowstr+= '<td>' + res.p + '</td>';
-            $('#main').append('<tr id="row'+res.pk+'">'+rowstr+'</tr>');
+            rowstr+= '<td> by ' + res.director + '</td>';
+            rowstr+= '<td> Stars: ' + res.stars + '</td>';
+            $('#main').append('<tr class="space_under" id="row'+res.pk+'">'+rowstr+'</tr>');
         }
 
         if(results.length ==0) $('#more_btn').attr('disabled','');
@@ -63,6 +68,15 @@
 <br\><br\>
 
 <table id="main" >
+<colgroup>
+<col span="1" style="width: 10%;">
+<col span="1" style="width: 15%;">
+<col span="1" style="width: 15%;">
+<col span="1" style="width: 5%;">
+<col span="1" style="width: 15%;">
+<col span="1" style="width: 45%;">
+<!--<col span="1" style="width: 45%;">-->
+</colgroup>
 </table>
 <button id="more_btn" onclick="more();" >more</button>
 {% endif %}

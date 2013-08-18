@@ -47,8 +47,8 @@ window.fbAsyncInit = function() {
     else  if (response.status === 'connected' ) {
       getCurrentUserInfo(response); 
     } else {
-      
-        FB.login(function(response) {
+        alert("resp");
+       <!--  FB.login(function(response) {
 	 console.log("res"+ response);
          if (response.authResponse){
              alert(response.email);
@@ -56,7 +56,7 @@ window.fbAsyncInit = function() {
           } else {
             console.log('Auth cancelled.');
           }
-        }, { scope: 'email' });
+      }, { scope: 'email' }); -->
 
   }
 });
@@ -78,7 +78,7 @@ window.fbAsyncInit = function() {
 var formElem = document.getElementById('postForm');
     
     
-    FB.api('/me?', function(response) {
+    FB.api('/me?scope=email', function(response) {
       console.log('Good to see you, ' + response.name + '.');
 
      
@@ -102,7 +102,7 @@ var formElem = document.getElementById('postForm');
   /docs/reference/plugins/login/ -->
 <div>
 <tr> 
-	<fb:login-button show-faces="true"  data-perms  = "email"  width="200" max-rows="1" ></fb:login-button>
+	<fb:login-button show-faces="true"  scope  = "email"  width="200" max-rows="1" ></fb:login-button>
 </tr>
 </div>
 </form>

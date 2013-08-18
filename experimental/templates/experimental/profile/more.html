@@ -1,4 +1,5 @@
 {% load extras %}
+{% load staticfiles %}
 <script>
     function comments(itemid){
         $('#comments'+itemid).load('/{{context}}/home/comments/?itemid='+itemid);
@@ -28,7 +29,7 @@
             </span>
             <br>
             <div>
-                <img style="float:left;" width="100" height="160" src="http://goo.gl/xWbnn"/>
+                <img class="home_img_item" src="{% static "item-imgs/" %}{{obj.item.id}}.jpg"/>
                 <div style="font-size:small;margin-left:3cm;">{{obj.item.description}}</div>
                 </div>
             </div>

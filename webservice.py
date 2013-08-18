@@ -29,6 +29,9 @@ def refine_reclist(resp):
         rec_list.append((sitem_id, pre))
     return rec_list
 
+def refine_rec(pre):
+    return min(max(1, pre), 5)
+
 class WebService(object):
 
     _instance =  None
@@ -52,8 +55,11 @@ class WebService(object):
             print 'Connecting to webserver.. Please wait.'
             timeout = 15
             if self.context == 'experimental':
-                timeout = 1
-            self._client = Client(self.url, timeout=timeout)
+                timeout = 4
+            try:
+                self._client = Client(self.url, timeout=timeout)
+            except URLError:
+                self._client = "Mock"
             print 'Connection established.'
         else:
             print "Already connected"
@@ -80,13 +86,16 @@ class WebService(object):
         self._client.service.test()
 
     def get_recs(self, user_id, tags='', offset=0, limit=100):
-        try:
+        try: 
+            print user_id
             resp = self._client.service.getRecommendationListPaginated(self.context,
                     user_id, tags, offset, limit)
-        except URLError:
-            return []
-
-        return refine_reclist(resp)
+            print resp
+            resp = refine_reclist(resp)
+            print resp
+        except (URLError, AttributeError):
+            resp = []
+        return resp
 
 
     def add_pref(self, user_id, item_id, rating):
@@ -108,24 +117,18 @@ class WebService(object):
         self.add_pref(self, user_id, item_id, rating)
 
 
-
     def get_recommendations(self, user_id, n=100):
-
-        #total = User.objects.count()
-        #if WebService.total_user != total:
-            #print total, WebService.total_user
-            #self.build_item_sim_matrix()
-            #WebService.total_user = total
-        #else:
-            #print "Equal"
 
         #TODO: n=30 burada olmamali: Design problem. View icinde bitirelim bunu sonra
         if self.isConnected():
             if self.is_model_alive():
-                t = int(time.time())
                 #return self._client.service.getRecommendationList(user_id, self.context, t)[:n]
-                rec_list = self._client.service.getRecommendationList(self.context,user_id)[:n]
-                return refine_reclist(rec_list)
+                try: 
+                    rec_list = self._client.service.getRecommendationList(self.context,user_id)[:n]
+                    rec_list = refine_reclist(rec_list)
+                except (URLError, AttributeError):
+                    rec_list = []
+                return rec_list
             else:
                 self.train_model()
                 return self.get_recommendations(user_id, n)
@@ -141,10 +144,9 @@ class WebService(object):
     def estimate_pref(self, user_id, item_id):
         try:
             p = self._client.service.estimatePreference(self.context, user_id, item_id)
-        except URLError:
+        except URLError or AttributeError:
             return -1
-        reclist = refine_reclist([p])
-        return reclist[0]
+        return refine_rec(p)
 
 
 def build_whole_ISM():

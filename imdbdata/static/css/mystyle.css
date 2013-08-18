@@ -18,3 +18,12 @@ img.delete-btn
     background:url('delete.gif');
 }
 
+img.home_img_item {
+    height: 160px;
+    width: 100px;
+}
+
+img.feed_img_item {
+    height: 100px;
+    width: 100px;
+}
