@@ -33,6 +33,16 @@ img.small_img_item {
     width: 25px;
 }
 
+img.similar_img_item {
+    height: 80px;
+    width: 50px;
+}
+
+img.detail_img_item {
+    height: 350px;
+    width: 200px;
+}
+
 tr.space_under > td
 {
       padding-bottom: 1em;

@@ -15,7 +15,7 @@
 <div style="margin-left:100px;max-width:920px;">
     <br>
     <div style="float:left">
-        <img style="float:left;" width="214" height="317" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/>
+        <img class="detail_img_item" style="float:left;" title="row.0.name" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/>
         <div style="margin-left:6cm;max-width:500px;min-height:317px">
         <div style="min-height:270px">
             <span style="font-size:large;font-weight:lighter;">
@@ -45,7 +45,7 @@
     <h3>Similar Movies</h3>
     {% for item in sim_items %}
         <a href="/{{ context }}/detail/{{ item.pk }}/">
-        <img width="50" height="160" src="{{item.img}}"/></a>
+        <img class="similar_img_item" title="{{item.name}} "src="{% static "item-imgs/" %}{{item.id}}.jpg"/></a>
     {% endfor %}
     </div>
 
