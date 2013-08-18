@@ -30,6 +30,7 @@ class Action(models.Model):
 
 class Item(models.Model):
     name = models.TextField()
+    tr_name = models.TextField()
 
     #additional fields: isbn,author, director
 
@@ -37,6 +38,21 @@ class Item(models.Model):
     img = models.CharField(max_length=250,default="http://goo.gl/nSZUx")
     description = models.TextField()
     num_rating = models.IntegerField(default=0)
+    director = models.CharField(max_length=250,default="Osman Baskaya")
+    genres = models.TextField(max_length=250,default="Comedy")
+    stars = models.TextField(max_length=250,default="Tevfik Aytekin, Mahmut, Ceyhun")
+
+
+    @property
+    def get_genres(self):
+        return self.genres[1:-1].replace('"', '')
+
+
+    @property
+    def get_stars(self):
+        ss = self.stars[1:-1]
+        return ss.replace('"', '')
+        return "Osman Baskaya, Kenan Isik"
 
     @staticmethod
     def get_rated_by(user):

@@ -56,7 +56,7 @@ def log_in(request):
 
 def exit(request):
     logout(request)
-    return HttpResponseRedirect('/accounts/register?logout=1')
+    return HttpResponseRedirect('/login?logout=1')
 
 def create_account(request):
     if request.user.is_anonymous():

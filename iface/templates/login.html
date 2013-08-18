@@ -27,20 +27,31 @@
 window.fbAsyncInit = function() {
   FB.init({
     appId      : '609679559063513', // App ID
-    channelUrl : 'http://54.246.114.38/experimental/home/', // Channel File
-    status     : true, // check login status
+    channelUrl : 'http://54.246.114.38', // Channel File
+    status     : true , // t check login staeus
     cookie     : false, // enable cookies to allow the server to access the session
-    xfbml      : true  // parse XFBML
+    xfbml      : true, // parse XFBML
+    oauth      : true
   });
 
   FB.Event.subscribe('auth.authResponseChange', function(response) {
-    if (response.status === 'connected' ) {
+    alert(response.email);
+    if(response.status === 'connected' && window.location.href.indexOf("logout=1")!=-1 )
+    {
+        FB.logout();
+    }
+    else if(window.location.href.indexOf("logout=1")!=-1)
+    {
+        window.location.href="/";
+    }
+    else  if (response.status === 'connected' ) {
       getCurrentUserInfo(response); 
     } else {
       
         FB.login(function(response) {
 	 console.log("res"+ response);
-          if (response.authResponse){
+         if (response.authResponse){
+             alert(response.email);
             getCurrentUserInfo(response);
           } else {
             console.log('Auth cancelled.');
@@ -91,7 +102,7 @@ var formElem = document.getElementById('postForm');
   /docs/reference/plugins/login/ -->
 <div>
 <tr> 
-	<fb:login-button show-faces="true" scope="email"  width="200" max-rows="1" ></fb:login-button>
+	<fb:login-button show-faces="true"  data-perms  = "email"  width="200" max-rows="1" ></fb:login-button>
 </tr>
 </div>
 </form>
