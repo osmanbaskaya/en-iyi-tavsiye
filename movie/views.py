@@ -183,17 +183,18 @@ def feedrec(request):
 def get_rec(request):
     reclist =[]
     limit = 10
-    rcount = Rating.objects.filter(user=request.user).count() - limit + 1
-    if  rcount > limit:
+    rcount = Rating.objects.filter(user=request.user).count()
+    if  rcount >= limit:
         w = WebService(context)
         resp = w.get_recs(request.user.pk)
+        print resp
         for sitem_id, pre in resp:
             reclist.append((Item.objects.get(pk=int(sitem_id)),
                 ((pre)),0))
         reclist.reverse()
     return render(request, context + '/recommendations.html', {
         'context':context,'reclist':reclist, 'user': request.user,'tags':['war'],
-        'limit':limit,'diff':limit-rcount, 'rcount': rcount,
+        'limit':limit,'diff':rcount-limit, 'rcount': rcount,
         })
 
 
@@ -231,14 +232,10 @@ def follow(request):
 
 
 def detail(request,pk):
+
     from django.db.models import Avg, Count
     item = Item.objects.get(pk=pk)
     res = Rating.objects.filter(item_id=item.pk).aggregate(num_ratings=Count('id'),avg_rating=Avg('rating'))
-    '''if UserRec.objects.filter(user=request.user,
-            item=item).count():
-        userrec=UserRec.objects.get(user=request.user,item=item)
-    else:
-        userrec=None'''
 
     pred = 0
     w = WebService(context)
@@ -246,8 +243,6 @@ def detail(request,pk):
         rating = Rating.objects.get(user=request.user,item=item)
     else:
         pred = w.estimate_pref(request.user.id, item.id)
-        #pred = max(pred, 1)
-        #pred = min(pred, 5)
         rating = Rating(user=request.user,item=item,rating=0)
     row = (item,rating)
 

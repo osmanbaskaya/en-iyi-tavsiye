@@ -24,7 +24,7 @@
             </span>
             </br>
             {% for row in rows|slice:":12" %}
-                <a href=""><img class="small_img_item" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/></a>
+                <a href=""><img class="small_img_item" title="{{row.0.name}}" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/></a>
             {% endfor %}
             </br>
             </br>
