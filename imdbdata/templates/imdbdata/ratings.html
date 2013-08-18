@@ -18,7 +18,7 @@
 <tr id="row{{row.0.pk}}">
     <!--<td> <img width="50px" height="100px" src="{{row.0.img}}"/>  </td>-->
     <td> <img width="100px" height="100px" src="{% static "item-imgs/" %}{{row.0.id}}.jpg" itemprop="image"> </td>
-    <td align="left" style="padding:0 15px 0 15px">  <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.tr_name}} ({{row.0.year}}) </a> </br> </br>
+    <td align="left" style="padding:0 15px 0 15px">  <a href="/{{ context }}/detail/{{row.0.pk}}">{{row.0.name}} ({{row.0.year}}) </a> </br> </br>
 
     <span style="font-size:small"> 
     <b> Genres: </b>{{row.0.get_genres}} 
