@@ -90,9 +90,7 @@ class WebService(object):
             print user_id
             resp = self._client.service.getRecommendationListPaginated(self.context,
                     user_id, tags, offset, limit)
-            print resp
             resp = refine_reclist(resp)
-            print resp
         except (URLError, AttributeError):
             resp = []
         return resp

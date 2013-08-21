@@ -11,15 +11,15 @@
 {% trans "Please enter your username and password" %}
 
 
-<form action="/login/" method="POST" id='postForm'>
+<form class="row" action="/login/" method="POST" id='postForm'>
     {% csrf_token %}
-    <input type="text" name="username" id="username" />
-    <input type="password" name="password1" id="password1" />
+    <input class="span3" type="text" name="username" id="username" />
+    <input class="span3" type="password" name="password1" id="password1" />
     <!--<input type="hidden" name="next" value="/movie/myratings/" />-->
     <input type="hidden" name="fblogin" id="fblogin" /> 
     <input type="hidden" name="email" id="email" />
 
-    <input type="submit" value={% trans "login" %} />
+    <input class="span1" type="submit" value={% trans "login" %} />
 
 
 
@@ -34,32 +34,23 @@ window.fbAsyncInit = function() {
     oauth      : true
   });
 
-  FB.Event.subscribe('auth.authResponseChange', function(response) {
-    alert(response.email);
+/*  FB.Event.subscribe('auth.authResponseChange', function(response) {
+      console.log(response);
     if(response.status === 'connected' && window.location.href.indexOf("logout=1")!=-1 )
     {
-        FB.logout();
+//        FB.logout();
     }
     else if(window.location.href.indexOf("logout=1")!=-1)
     {
         window.location.href="/";
     }
-    else  if (response.status === 'connected' ) {
+    else 
+ if (response.status === 'connected' ) {
       getCurrentUserInfo(response); 
     } else {
-        alert("resp");
-         FB.login(function(response) {
-	 console.log("res"+ response);
-         if (response.authResponse){
-             alert(response.email);
-            getCurrentUserInfo(response);
-          } else {
-            console.log('Auth cancelled.');
-          }
-      }, { scope: 'email' });  
 
   }
-});
+}); */
   };
 
   // Load the SDK asynchronously
@@ -77,7 +68,7 @@ window.fbAsyncInit = function() {
     console.log('Welcome!  Fetching your information.... ');
 var formElem = document.getElementById('postForm');
     
-    
+     
     FB.api('/me?fields=name,email,username', function(response) {
       console.log('Good to see you, ' + response.name + '.');
 
@@ -90,8 +81,17 @@ var formElem = document.getElementById('postForm');
      formElem.submit(); 
 
     
-    });
+ });
   }
+ 
+  function after_login_button (arg)
+  {
+	 if(arg.status==="connected")	
+	{
+	  getCurrentUserInfo(arg);
+	}
+  }
+
 </script>
 
 <!--
@@ -102,7 +102,7 @@ var formElem = document.getElementById('postForm');
   /docs/reference/plugins/login/ -->
 <div>
 <tr> 
-	<fb:login-button show-faces="true"  scope  = "email"  width="200" max-rows="1" ></fb:login-button>
+	<fb:login-button onlogin = "after_login_button"  show-faces="false"  scope  = "email"  width="200" max-rows="1" ></fb:login-button>
 </tr>
 </div>
 </form>
