@@ -18,7 +18,7 @@
 {%if fusers %}
 <div id="right" style="float:right;margin-right:2cm;">
 <table>
-    <caption>people to follow</caption>
+    <caption>Benzerlerin</caption>
   {% for u in fusers %}
   <tr><td><img width="30px" height="60px" src="{{u.profile.pic_url}}"/></td><td><a data-ajax="/{{context}}/user_popover/?user={{u.pk}}" onmouseout="cpopup(this);" onmouseover="bpopup(this);" href=""> {{ u.username }}</a></td>
       </tr>

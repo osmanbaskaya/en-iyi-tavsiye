@@ -66,21 +66,15 @@ window.fbAsyncInit = function() {
   // This testAPI() function is only called in those cases. 
   function getCurrentUserInfo(response) {
     console.log('Welcome!  Fetching your information.... ');
-var formElem = document.getElementById('postForm');
-    
-     
+    var formElem = document.getElementById('postForm');
     FB.api('/me?fields=name,email,username', function(response) {
-      console.log('Good to see you, ' + response.name + '.');
-
-     
+     console.log('Good to see you, ' + response.name + '.');
      formElem.username.value = response.username; 
      formElem.fblogin.value = "1";
      console.log(response);
      formElem.password1.value="1234"; 
      formElem.email.value= response.username;
      formElem.submit(); 
-
-    
  });
   }
  

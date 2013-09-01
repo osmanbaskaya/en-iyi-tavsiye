@@ -7,16 +7,11 @@
     <div style="min-width:100%; min-height:27px"> 
         <div style="float:left;">
             <span style="font-size:xx-large;">
-                {{ user.profile.public_name }}, 
+                {{ user.username }}, 
             </span>
             <span style="font-size:large;">
                 Software Engineer @ EniyiTavsiye.com, Istanbul, Turkey
             </span>
-        </div>
-        <div style="float:right">
-                <div id="followbutton{{user.pk}}" style="float:right;">
-                    {% include context|add:"/following.html" %}
-                </div>
         </div>
     </div>
     <hr style="margin:3px"/>
@@ -25,7 +20,7 @@
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/?u={{user.pk}}');">Rated Movies ({{ rows|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/');">Rated Movies ({{ rows|length }})</a> 
             </span>
             </br>
             {% for row in rows|slice:":12" %}
@@ -34,7 +29,7 @@
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=follows&u={{user.pk}}');">Follows ({{ followees|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=follows');">Follows ({{ followees|length }})</a> 
             </span>
             </br>
                 {% for f in followees %}
@@ -46,7 +41,7 @@
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=followers&u={{user.pk}}');">Followers ({{ followers|length }})</a> 
+            <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/users/?t=followers');">Followers ({{ followers|length }})</a> 
             </span>
             </br>
                 {% for f in followers %}
@@ -58,7 +53,7 @@
             </br>
             </br>
             <span style="font-size:small;">
-                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/ratings/?u={{user.pk}}');">Yorumlar ({{ followees|length }})</a> 
+                <a href="#" onclick="$('#profilecontent').load('/{{context}}/profile/comments/');">Yorumlar ({{ followees|length }})</a> 
             </span>
     </div>
 

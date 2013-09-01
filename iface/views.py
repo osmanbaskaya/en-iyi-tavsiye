@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
 from registration.views import register
+from iface.registerviews import RegistrationFormZ
 
 def log_in(request):
     if request.user.is_authenticated():
@@ -61,6 +62,6 @@ def exit(request):
 def create_account(request):
     if request.user.is_anonymous():
         #return register(request, 'registration.backends.default.DefaultBackend', success_url='login.html')
-        return register(request, 'registration.backends.simple.SimpleBackend', success_url='/login/')
+        return register(request, backend = 'iface.registerviews.RegistrationFormZ'  , success_url='/login/',form_class= RegistrationFormZ )
     else:
         return HttpResponseRedirect('/movie/feed_rec/')

@@ -1,5 +1,4 @@
 {% extends context|add:"/base.html" %}
-{% load staticfiles %}
 
 {% block body %}
 
@@ -7,7 +6,7 @@
     <div style="min-width:100%; min-height:27px"> 
         <div style="float:left;">
             <span style="font-size:xx-large;">
-                {{ user.profile.public_name }}, 
+                {{ user.username }}, 
             </span>
             <span style="font-size:large;">
                 Software Engineer @ EniyiTavsiye.com, Istanbul, Turkey
@@ -29,7 +28,8 @@
             </span>
             </br>
             {% for row in rows|slice:":12" %}
-                <a href=""><img class="small_img_item" title="{{row.0.name}}" src="{% static "item-imgs/" %}{{row.0.id}}.jpg"/></a>
+                <a href=""><img width="25px" 
+                src="{{ row.0.img }}"/></a>
             {% endfor %}
             </br>
             </br>

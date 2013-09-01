@@ -1,0 +1,24 @@
+{% load extras %}
+{% for user,f,sim_perc in rows %}
+<div style="min-height:50px;">
+    <!--<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{act.user.profile.pic_url}}"></div>-->
+            <!--<a href="/{{ context }}/profile/?u={{user.pk}}">{{user.username}}</a>-->
+        <div style="height:25px;">
+        <div style="float:left;">
+        <a href="/{{ context }}/profile/?u={{user.pk}}">{{user.username}}</a>
+        </div>
+        <div style="float:right;" id="followbutton{{user.pk}}" >
+            {% include context|add:"/following.html" %}
+        </div>
+        </div>
+        <div>
+            <img width="70" height="50" src="{{user.profile.pic_url}}">
+            title mitle
+            <div style="margin-top:10px;" class="progress progress-success">
+                <div class="bar" style="width: {{sim_perc}}%"></div>
+            </div>
+        </div>
+    <hr style="margin-bottom:0.1cm;"/>
+</div>
+{% endfor %}
+<!--<button class="btn btn-primary" onclick="homemore(this,{{noffset}});">more</button>-->

@@ -1,0 +1,7 @@
+{% for row in rows %}
+<div style="float:left;width:250px;height:200px;">
+    <a href="/{{ context }}/detail/{{row.0.pk}}"><span style="font-size:small;">{{row.0.name}}</span></a><br>
+        {% include context|add:"/rating_ro.html" %}
+    <img width="100px" height="150px" src="{{row.0.img}}"/>
+</div>
+{% endfor %}
