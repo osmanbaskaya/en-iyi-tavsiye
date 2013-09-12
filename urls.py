@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from iface.registerviews import UserProfile
+from iface.registerviews import UserProfileUpdate
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -18,6 +19,7 @@ urlpatterns = patterns('',
     url(r'experimental', include('experimental.urls')),
     url(r'book', include('book.urls')),
     url(r'^accounts', include('iface.urls')),
+    url(r'myprofile',UserProfileUpdate.as_view(),name='userprofile_update'),
     #url(r'accounts/', include('registration.backends.default.urls')),
 
     #url(r'book', include('book.urls'),

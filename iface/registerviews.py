@@ -3,15 +3,16 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-
+from django import forms
 from registration import signals
-
-from  django import forms
 from registration.forms import RegistrationForm
 from django.utils.translation import ugettext_lazy as _
 from iface.models import UserProfile
 from registration.models import RegistrationProfile
 from registration.backends.simple import SimpleBackend
+from django.views.generic.edit import UpdateView
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 attrs_dict = { 'class': 'required' }
 
 class RegistrationFormZ(RegistrationForm):
@@ -68,5 +69,22 @@ class RegistrationFormZ(RegistrationForm):
     def post_activation_redirect(self, request, user):
         raise NotImplementedError
 
+class UpdateForm(forms.ModelForm):
+    class Meta:
+        model= UserProfile
+        fields=['public_name','bio']
+    def save(self):
+        self.instance.save()
 
+class UserProfileUpdate(UpdateView):
+    model= UserProfile
+    form_class=UpdateForm
+    template_name_suffix= '_update_form'
 
+    def get_absolute_url(self):
+        return reverse('author-detail',kwargs={'pk':self.pk})
+    def get_object(self):
+        u= User.objects.get(id=self.request.user.id)
+        return UserProfile.objects.get(user=u)
+    def get_success_url(self):
+        return '/myprofile'

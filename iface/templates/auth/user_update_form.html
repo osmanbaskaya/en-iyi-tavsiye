@@ -1,0 +1,19 @@
+{% extends "based.html" %}
+{% load i18n %}
+{% block title %} En İyi Tavsiye - {% trans "Register Now" %} {% endblock %}
+{% block body %}
+
+<h1>{% trans "User Profile Update Form" %}</h1>
+<br/>
+
+<form method="POST" action="/experimental/profile/">
+<!--<form method="POST" action="/login/">-->
+{% csrf_token %}
+
+{{ form.as_p }}
+
+
+<input type="submit" value="Update" />
+</form>
+
+{% endblock %}
