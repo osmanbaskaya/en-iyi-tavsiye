@@ -13,6 +13,8 @@ from registration.backends.simple import SimpleBackend
 from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 attrs_dict = { 'class': 'required' }
 
 class RegistrationFormZ(RegistrationForm):
@@ -70,11 +72,12 @@ class RegistrationFormZ(RegistrationForm):
         raise NotImplementedError
 
 class UpdateForm(forms.ModelForm):
+    username= forms.IntegerField()
     class Meta:
         model= UserProfile
-        fields=['public_name','bio']
-    def save(self):
-        self.instance.save()
+        fields=['public_name','pic_url']
+    #def save(self):
+     #   self.instance.save()
 
 class UserProfileUpdate(UpdateView):
     model= UserProfile
@@ -88,3 +91,7 @@ class UserProfileUpdate(UpdateView):
         return UserProfile.objects.get(user=u)
     def get_success_url(self):
         return '/myprofile'
+    def form_valid(self,form):
+        instance= form.save()
+        messages.add_message(self.request, 20,'success')
+        return HttpResponseRedirect(self.get_success_url()) 
