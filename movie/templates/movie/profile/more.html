@@ -41,13 +41,13 @@
         {% elif act.what == 'follow' %}
         <span style="font-size:small;">
         <a href="/{{ context }}/profile/?u={{act.user_id}}">{{act.user.username}}</a>
-        is now following {% if obj.user == user %}you{%else%}<a data-ajax="/{{context}}/user_popover/?user={{obj.user.pk}}" onmouseout="cpopup(this);" onmouseover="bpopup(this);" href="#"> {{ obj.user.username }}</a>{%endif%}
+        is now following {% if obj.user == user %}you{%else%}<a data-ajax="/{{context}}/user_popover/?user={{obj.user.pk}}" onmouseout="cpopup(this);" onmouseover="bpopup(this);" href="/{{context}}/profile/?u={{obj.user.pk}}"> {{ obj.user.username }}</a>{%endif%}
         <span style="color:#999;font-size:x-small;float:right;">{{act.when|dthumanize}}</span>
         </span>
         <div style="margin-top:10px;">
             <img width="120" height="160" src="{{ obj.user.profile.pic_url}}"/>
             {% for item in obj.items %}
-                <img width="50" height="60" src="http://goo.gl/xWbnn"/>
+                <img class="similar_img_item" title="{{item.name}}" src="{% static "item-imgs/" %}{{item.id}}.jpg"/>
             {% endfor %}
         </div>
         {% elif act.what == 'recommend' %}

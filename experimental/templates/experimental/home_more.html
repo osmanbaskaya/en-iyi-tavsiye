@@ -29,12 +29,13 @@
             <br>
             <div>
                 <img class="home_img_item" style="float:left;" src="{% static "item-imgs/" %}{{obj.item.id}}.jpg"/>
-                <div style="font-size:small;margin-left:3cm;">{{obj.item.director}}</br> {{obj.item.stars}}</div>
+                <div style="font-size:small;margin-left:3cm;">Yönetmen:{{obj.item.director}}</br> </br>
+Başroller: {{obj.item.get_stars}}</br></br>Filmin ait olduğu tür(ler): {{obj.item.get_genres}} </div>
                 </div>
             </div>
-            <div style="margin-top:100px;">
-                <button class="btn" onclick="comments({{obj.item.pk}});">Yorumlar</button>
-            </div>
+            <!--<div style="margin-top:100px;">-->
+                <!--<button class="btn" onclick="comments({{obj.item.pk}});">Yorumlar</button>-->
+            <!--</div>-->
             <div style="margin-top:10px;" id="comments{{obj.item.pk}}">
             </div>
         {% elif act.what == 'follow' %}

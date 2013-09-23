@@ -72,7 +72,7 @@ class RegistrationFormZ(RegistrationForm):
         raise NotImplementedError
 
 class UpdateForm(forms.ModelForm):
-    username= forms.IntegerField()
+   # username= forms.IntegerField()
     class Meta:
         model= UserProfile
         fields=['public_name','pic_url']

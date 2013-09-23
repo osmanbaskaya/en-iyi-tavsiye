@@ -51,8 +51,9 @@ class Item(models.Model):
     @property
     def get_stars(self):
         ss = self.stars[1:-1]
+        if ss is None:
+            return "Osman Baskaya, Kenan Isik"
         return ss.replace('"', '')
-        return "Osman Baskaya, Kenan Isik"
 
     @staticmethod
     def get_rated_by(user):
