@@ -6,12 +6,9 @@
 
 <!--Number of movies : {{ rows|length }}-->
 
-<ul class="nav nav-tabs">
-  <li {% if act == 'item' %}class="active"{% endif %}> <a href="">Items</a> </li>
-  <li {% if act == 'user' %}class="active"{% endif %}><a href="">Users</a></li>
-</ul>
+<div>
+<div style="float:left; max-width:1000px">
 <table>
-
 <colgroup>
 <col span="1" style="width: 10%;">
 <col span="1" style="width: 15%;">
@@ -46,8 +43,21 @@
 </tr>
 {% endfor %}
 </table>
+</div>
+<span style="font-size:large;">
+Kullanıcılar:
+</span>
+<div style="float:right">
+{% for user in users %}
+<div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{user.profile.pic_url}}"></div>
 
-<button class="btn-large btn-primary" onclick="history.go()">Yenile</button>
+    {{ user.username }} 
+
+{% endfor %}
+</div>
+</div>
+
+<!--<button class="btn-large btn-primary" onclick="history.go()">Yenile</button>-->
 </br>
 </br>
 </br>

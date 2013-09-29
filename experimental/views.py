@@ -31,7 +31,6 @@ def user_popover(request):
 def search(request):
     items = Item.objects.filter( name__icontains=request.GET.get('q'))[:10]
     users = User.objects.filter( username__icontains=request.GET.get('q'))
-    urows=[]
     rows = []
     for item in items:
         try:
@@ -39,10 +38,8 @@ def search(request):
             rows.append((item,r))
         except Rating.DoesNotExist:
             rows.append((item,None))
-    for user in users:
-        urows.append(user.username)
     return render(request, context + '/search.html',{'context':context,'rlist':range(1,6),
-        'urows':urows, 'rows':rows, 'act':'item'})
+        'users':users, 'rows':rows, 'act':'item'})
 
 @login_required(login_url='/login/')
 def reclist(request):
