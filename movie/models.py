@@ -10,7 +10,7 @@ User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
 class Action(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name="movie_Action_user")
     what = models.CharField(max_length=50)
     when = models.DateTimeField(auto_now_add=True)
     gen_id = models.IntegerField()
@@ -71,8 +71,8 @@ class Item(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey(User)
-    followee = models.ForeignKey(User)
+    follower = models.ForeignKey(User, related_name="movie_Follow_follower")
+    followee = models.ForeignKey(User, related_name="movie_Follow_followee")
 
     class Meta:
         db_table='%s_follow' % context
@@ -101,7 +101,7 @@ class TagName(models.Model):
         db_table='%s_tagname' % context
 
 class UserRec(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name="movie_UserRect_user")
     item = models.ForeignKey(Item)
     comment = models.CharField(max_length=150,blank=True)
     class Meta:
