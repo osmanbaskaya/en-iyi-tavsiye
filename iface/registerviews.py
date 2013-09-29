@@ -72,10 +72,10 @@ class RegistrationFormZ(RegistrationForm):
         raise NotImplementedError
 
 class UpdateForm(forms.ModelForm):
-   # username= forms.IntegerField()
+    id_username= forms.CharField ()
     class Meta:
         model= UserProfile
-        fields=['public_name','pic_url']
+        fields=['id_username','public_name','pic_url']
     #def save(self):
      #   self.instance.save()
 
@@ -88,10 +88,16 @@ class UserProfileUpdate(UpdateView):
         return reverse('author-detail',kwargs={'pk':self.pk})
     def get_object(self):
         u= User.objects.get(id=self.request.user.id)
+        self.form_class.id_username="asdasdasd"
         return UserProfile.objects.get(user=u)
     def get_success_url(self):
         return '/myprofile'
     def form_valid(self,form):
-        instance= form.save()
-        messages.add_message(self.request, 20,'success')
+        username= self.request.POST['id_username']
+        if User.objects.filter(username=username).count()  :
+            messages.add_message(self.request,40,'Username must be unique')     
+        else:
+            User.objects.filter(id=self.request.user.id).update(username=username)
+            instance= form.save()
+            messages.add_message(self.request, 20,'success')  
         return HttpResponseRedirect(self.get_success_url()) 
