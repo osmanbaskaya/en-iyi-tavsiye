@@ -6,6 +6,10 @@
 
 <!--Number of movies : {{ rows|length }}-->
 
+<ul class="nav nav-tabs">
+  <li {% if act == 'item' %}class="active"{% endif %}> <a href="">Items</a> </li>
+  <li {% if act == 'user' %}class="active"{% endif %}><a href="">Users</a></li>
+</ul>
 <table>
 
 <colgroup>

@@ -26,18 +26,23 @@ def user_popover(request):
 
     return render(request, context + '/user_popover.html',
             {'context':context,'user':user,'sim_perc':sim_perc,'f':f})
+
 @login_required(login_url='/login/')
 def search(request):
-    items = Item.objects.filter( name__icontains=request.GET.get('q'))[0:20]
-    rows=[]
+    items = Item.objects.filter( name__icontains=request.GET.get('q'))[:10]
+    users = User.objects.filter( username__icontains=request.GET.get('q'))
+    urows=[]
+    rows = []
     for item in items:
         try:
             r=Rating.objects.get(user=request.user,item = item)
             rows.append((item,r))
         except Rating.DoesNotExist:
             rows.append((item,None))
-    return render(request, context + '/ratings.html',{'context':context,'rlist':range(1,6),
-        'rows':rows})
+    for user in users:
+        urows.append(user.username)
+    return render(request, context + '/search.html',{'context':context,'rlist':range(1,6),
+        'urows':urows, 'rows':rows, 'act':'item'})
 
 @login_required(login_url='/login/')
 def reclist(request):
