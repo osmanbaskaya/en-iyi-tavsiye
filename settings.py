@@ -9,6 +9,7 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     ('Onur Kuru', 'kuru.onur1@gmail.com'),
     ('Osman Baskaya', 'osman.baskaya@computer.org'),
+    ('Ceyhun Can Ulker', 'ceyhuncanu@gmail.com'),
 )
     
 
@@ -157,9 +158,15 @@ ACCOUNT_ACTIVATION_DAYS = 7
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+      'require_debug_false': {
+        '()': 'django.utils.log.RequireDebugFalse'
+      }
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
