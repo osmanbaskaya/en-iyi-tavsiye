@@ -36,6 +36,7 @@ class RegistrationFormZ(RegistrationForm):
         u= User.objects.get(username =  username)    
         profile,created = UserProfile.objects.get_or_create(user=u)
         profile.public_name=kwargs['public_name']
+        profile.username=kwargs['username']
         profile.save()
         #profile= UserProfile.objects.get_or_create(user= u) 
         #profile.bio='static'
@@ -72,12 +73,13 @@ class RegistrationFormZ(RegistrationForm):
         raise NotImplementedError
 
 class UpdateForm(forms.ModelForm):
-    id_username= forms.CharField ()
-    class Meta:
-        model= UserProfile
-        fields=['id_username','public_name','pic_url']
-    #def save(self):
-     #   self.instance.save()
+    username= forms.CharField ()
+    public_name=forms.CharField()
+    pic_url=forms.CharField()
+    model= UserProfile
+    fields=['username','public_name','pic_url']
+    def __init__(self,*args,**kwargs):
+        super(UpdateForm,self).__init__(*args,**kwargs)
 
 class UserProfileUpdate(UpdateView):
     model= UserProfile
@@ -87,14 +89,13 @@ class UserProfileUpdate(UpdateView):
     def get_absolute_url(self):
         return reverse('author-detail',kwargs={'pk':self.pk})
     def get_object(self):
-        u= User.objects.get(id=self.request.user.id)
-        self.form_class.id_username="asdasdasd"
+        u=User.objects.get(id=self.request.user.id)
         return UserProfile.objects.get(user=u)
     def get_success_url(self):
         return '/myprofile'
     def form_valid(self,form):
-        username= self.request.POST['id_username']
-        if User.objects.filter(username=username).count()  :
+        username= self.request.POST['username']
+        if  User.objects.filter(username=username).count()  :
             messages.add_message(self.request,40,'Username must be unique')     
         else:
             User.objects.filter(id=self.request.user.id).update(username=username)
