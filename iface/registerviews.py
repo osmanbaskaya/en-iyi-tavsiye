@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+import random
 attrs_dict = { 'class': 'required' }
 
 class RegistrationFormZ(RegistrationForm):
@@ -37,6 +38,7 @@ class RegistrationFormZ(RegistrationForm):
         profile,created = UserProfile.objects.get_or_create(user=u)
         profile.public_name=kwargs['public_name']
         profile.username=kwargs['username']
+        profile.email=kwargs['email']
         profile.save()
         #profile= UserProfile.objects.get_or_create(user= u) 
         #profile.bio='static'
@@ -76,8 +78,11 @@ class UpdateForm(forms.ModelForm):
     username= forms.CharField ()
     public_name=forms.CharField()
     pic_url=forms.CharField()
+    email=forms.CharField()
+    location=forms.CharField(required=False)
+    password=forms.CharField(widget=forms.PasswordInput,required=False)
     model= UserProfile
-    fields=['username','public_name','pic_url']
+    fields=['username','public_name','pic_url','email','location','password']
     def __init__(self,*args,**kwargs):
         super(UpdateForm,self).__init__(*args,**kwargs)
 
@@ -95,10 +100,20 @@ class UserProfileUpdate(UpdateView):
         return '/myprofile'
     def form_valid(self,form):
         username= self.request.POST['username']
-        if  User.objects.filter(username=username).count()  :
+        password=self.request.POST['password']
+        email=self.request.POST['email']
+        location=self.request.POST['location']
+        if  User.objects.filter(username=username).count() == 1 and username != self.request.user.username  :
             messages.add_message(self.request,40,'Username must be unique')     
         else:
-            User.objects.filter(id=self.request.user.id).update(username=username)
-            instance= form.save()
-            messages.add_message(self.request, 20,'success')  
+            if User.objects.filter(email=email).count()>0 and email!=self.request.user.email:
+                messages.add_message(self.request,40,'Email must be uniqe')    
+            else:                
+                User.objects.filter(id=self.request.user.id).update(username=username,email=email)
+                u=User.objects.get(id=self.request.user.id)
+                if password !="" :
+                    u.set_password(password)
+                u.save()
+                instance= form.save()
+                messages.add_message(self.request, 20,'success')  
         return HttpResponseRedirect(self.get_success_url()) 

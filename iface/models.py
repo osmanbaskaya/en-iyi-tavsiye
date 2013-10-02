@@ -8,4 +8,6 @@ class UserProfile(models.Model):
     pic_url = models.CharField(max_length=250,
             default='http://www.agilitytrebic.cz/wp-content/uploads//unknown-user-poster.gif')
     bio = models.CharField(max_length=128)
+    email=models.CharField(max_length=50)
+    location=models.CharField(max_length=50)
     

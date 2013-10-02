@@ -96,7 +96,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
+PASSWORD_HASHERS=(
+        'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+        'django.contrib.auth.hashers.SHA1PasswordHasher',
+        )
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'll$*7n5g8l#&^iq9uv)ub3$8h$0@@f3vfovctgvye*%vxf3dqo'
 
