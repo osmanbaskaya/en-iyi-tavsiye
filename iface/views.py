@@ -11,6 +11,8 @@ from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
 from registration.views import register
 from iface.registerviews import RegistrationFormZ
+from random import randint
+from iface.models import UserProfile
 
 def log_in(request):
     if request.user.is_authenticated():
@@ -20,30 +22,40 @@ def log_in(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password1']
-	fblogin = request.POST['fblogin']
-	if fblogin == '1':
-	    password = '1234'
- 
+	fbusername = request.POST['fbusername']
+        email=request.POST['email']
+	if email != "":
+	    if len(User.objects.filter(email=email)) ==0:
+                username="user"+str(randint(1,1000000))
+                while len(User.objects.filter(username=username))!=0 :
+                    username="user"+str(randint(1,1000000))
+                password="check_email_123123"
+                u=User.objects.create_user(username,email,password)
+                profile,created=UserProfile.objects.get_or_create(user=u)
+                profile.email=email
+                profile.public_name=fbusername
+                profile.username=username
+                profile.save()
+            else:
+                u=User.objects.filter(email=email)[0]
+                password="check_email_123123"
+                username=u.username
         if password == '' or username == '':
-	    return render_to_response('login.html', {'error_message':
-               	 'Both Username and password should be filled'},
-           context_instance=RequestContext(request))
-	else:
+            return render_to_response('login.html', {'error_message':
+               	     'Both Username and password should be filled'},
+                context_instance=RequestContext(request))
+        else:
        	    user = authenticate(username=username, password=password)
 
-	    if user is None and fblogin == '1' :
-		User.objects.create_user(username,username,password)
-	        user = authenticate(username=username, password=password)
-
-	    if user is not None:
-      		if user.is_active:
-	            login(request, user)
-        	    return HttpResponseRedirect('/experimental/profile/')
-	        else:
-	            return render_to_response('login.html', {'error_message': 
-                                                   'blocked account'})
+        if user is not None:
+      	    if user.is_active:
+	        login(request, user)
+        	return HttpResponseRedirect('/experimental/profile/')
 	    else:
-	        return render_to_response('login.html', {'error_message':
+	        return render_to_response('login.html', {'error_message': 
+                                                   'blocked account'})
+   	else:
+	    return render_to_response('login.html', {'error_message':
 	                'Username or password wrong.'},
 	                context_instance=RequestContext(request))
     else:
