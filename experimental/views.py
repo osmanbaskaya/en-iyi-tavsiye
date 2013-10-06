@@ -1,3 +1,5 @@
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
 # Create your views here.
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -8,10 +10,15 @@ import json
 from webservice import WebService
 import random
 from random import sample
+from itertools import cycle
 
 #constants
 context = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
 
+
+# bio ornekleri. 1.5'ten sonra silinecek
+bio=["Gezi direnişçisi", "Gençlik ve spor bakanı", "Akademisyen", "Yazılım Mühendisi", "Mimar", 
+"Avukat @ Başkaya Hukuk Bürosu", "Okutman @ Bahçeşehir Üniversitesi"]
 
 @login_required(login_url='/login/')
 def user_popover(request):
@@ -31,6 +38,7 @@ def user_popover(request):
 def search(request):
     items = Item.objects.filter( name__icontains=request.GET.get('q'))[:10]
     users = User.objects.filter( username__icontains=request.GET.get('q'))
+
     rows = []
     for item in items:
         try:
@@ -38,8 +46,9 @@ def search(request):
             rows.append((item,r))
         except Rating.DoesNotExist:
             rows.append((item,None))
+    users_bios = zip(users, cycle(bio))
     return render(request, context + '/search.html',{'context':context,'rlist':range(1,6),
-        'users':users, 'rows':rows, 'act':'item'})
+        'users_bios':users_bios, 'rows':rows, 'act':'item'})
 
 @login_required(login_url='/login/')
 def reclist(request):
