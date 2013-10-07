@@ -161,8 +161,8 @@ def rate(request):
         Action.objects.filter(user=u,what='rate',gen_id=i.pk).delete()
         rating.delete()
         rating=None
-
     if r>0:
+        Rating.objects.filter(user=u,item=i).delete()
         rating = Rating.objects.create(user=u,item=i,rating=r)
         Action.objects.create(user=request.user,what='rate',
                 gen_id=i.pk)

@@ -142,7 +142,7 @@ class WebService(object):
     def estimate_pref(self, user_id, item_id):
         try:
             p = self._client.service.estimatePreference(self.context, user_id, item_id)
-        except URLError or AttributeError:
+        except (AttributeError, URLError):
             return -1
         return refine_rec(p)
 

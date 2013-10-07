@@ -58,8 +58,8 @@ Kullanıcılar:
 {% for user, bio in users_bios %}
 <tr class="space_under" align="left"> 
 <td><div style="float:left;padding-top:0.3cm;"><img width="50" height="50" src="{{user.profile.pic_url}}"></div></td>
-    <td align="left" style="padding:0 15px 0 15px"> {{user.username}} </a> </br> </br></td>
-    <td align="left" style="padding:0 15px 0 15px"> {{bio}} </a> </br> </br></td>
+     <td align="left" style="padding:0 15px 0 15px">  <a href="/{{ context }}/profile/?u={{user.id}}">{{user.username}}</a> </br> </br></td>
+     <td align="left" style="padding:0 15px 0 15px"> {{bio}} </br> </br></td>
 </tr>
 {% endfor %}
 </table>
