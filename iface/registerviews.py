@@ -85,6 +85,11 @@ class UpdateForm(forms.ModelForm):
     fields=['username','public_name','pic_url','email','location','password']
     def __init__(self,*args,**kwargs):
         super(UpdateForm,self).__init__(*args,**kwargs)
+#    def clean (self):
+#	cleaned_data=super(UpdateForm,self).clean()
+#	password=cleaned_data.get("password")
+#	msg="test error msg"
+#	self._errors["password"]=self.error_class([msg])
 
 class UserProfileUpdate(UpdateView):
     model= UserProfile
@@ -103,6 +108,7 @@ class UserProfileUpdate(UpdateView):
         password=self.request.POST['password']
         email=self.request.POST['email']
         location=self.request.POST['location']
+	
         if  User.objects.filter(username=username).count() == 1 and username != self.request.user.username  :
             messages.add_message(self.request,40,'Username must be unique')     
         else:
@@ -112,7 +118,10 @@ class UserProfileUpdate(UpdateView):
                 User.objects.filter(id=self.request.user.id).update(username=username,email=email)
                 u=User.objects.get(id=self.request.user.id)
                 if password !="" :
-                    u.set_password(password)
+		    if len(password)<5:
+		        messages.add_message(self.request,40,'Sifre en az 6 hane olmali')
+			return HttpResponseRedirect(self.get_success_url())
+	            u.set_password(password)
                 u.save()
                 instance= form.save()
                 messages.add_message(self.request, 20,'success')  
