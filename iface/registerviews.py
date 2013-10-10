@@ -129,7 +129,7 @@ class UserProfileUpdate(UpdateView):
 	            if catchNumber and catchLetter:
 	                u.set_password(password)
 	            else:
-			messages.add_message(self.request,40,'Sifre en az bir sayi ve rakam icermelidir')
+			messages.add_message(self.request,40,'Sifre en az bir sayi ve harf icermelidir')
 			return HttpResponseRedirect(self.get_success_url())
                 u.save()
                 instance= form.save()
