@@ -121,8 +121,23 @@ class UserProfileUpdate(UpdateView):
 		    if len(password)<5:
 		        messages.add_message(self.request,40,'Sifre en az 6 hane olmali')
 			return HttpResponseRedirect(self.get_success_url())
-	            u.set_password(password)
+		    catchNumber=False
+		    catchLetter=False
+		    for ch in password:
+		        catchNumber= catchNumber or self.is_number(ch)	
+			catchLetter=catchLetter or not self.is_number(ch)
+	            if catchNumber and catchLetter:
+	                u.set_password(password)
+	            else:
+			messages.add_message(self.request,40,'Sifre en az bir sayi ve rakam icermelidir')
+			return HttpResponseRedirect(self.get_success_url())
                 u.save()
                 instance= form.save()
                 messages.add_message(self.request, 20,'success')  
-        return HttpResponseRedirect(self.get_success_url()) 
+        return HttpResponseRedirect(self.get_success_url())
+    def is_number(self,s): 
+        try:
+	    float(s)
+	    return True
+	except ValueError:
+	    return False
