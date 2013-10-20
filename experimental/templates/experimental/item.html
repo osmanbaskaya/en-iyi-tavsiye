@@ -26,12 +26,16 @@
             {% if pred != 0 and pred %}
                 Prediction for you: {{pred}}
             {% endif %}
+            </br>
+            </br>
             {% include context|add:"/rating.html" %} 
             </div>
             <div style="float:right;padding:3px">ratingc:{{ratingc}} reviewc:{{reviewc}}</div>
         </div>
         <hr style="margin-top:5px;margin-bottom:5px"/>
-        <span style="font-size:small">{{item.description}}</span><br>
+        </br>
+        </br>
+        <span style="font-size:small"><a href="http://www.imdb.com/title/tt{{item.id}}">IMDb sayfasına git</a></span><br>
         <hr style="margin-top:5px;margin-bottom:5px"/>
         <p>Director: Steven Spielberg</p>
         <p>Writers: Michael Crichton (novel), Michael Crichton (screenplay)</p>

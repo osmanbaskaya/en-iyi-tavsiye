@@ -19,7 +19,7 @@ img.delete-btn
 }
 
 img.home_img_item {
-    height: 160px;
+    height: 140px;
     width: 100px;
 }
 
@@ -39,7 +39,7 @@ img.similar_img_item {
 }
 
 img.detail_img_item {
-    height: 350px;
+    height: 280px;
     width: 200px;
 }
 

@@ -30,11 +30,8 @@
             <br>
             <div>
                 <img class="home_img_item" src="{% static "item-imgs/" %}{{obj.item.id}}.jpg"/>
-                <div style="font-size:small;margin-left:3cm;">{{obj.item.description}}</div>
+                <div style="font-size:small;margin-left:3cm;">{{obj.item.director}}</br></br>Başroller: {{obj.item.get_stars}}</div>
                 </div>
-            </div>
-            <div style="margin-top:100px;">
-                <button class="btn" onclick="comments({{obj.item.pk}});">Yorumlar</button>
             </div>
             <div style="margin-top:10px;" id="comments{{obj.item.pk}}">
             </div>
