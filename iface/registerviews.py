@@ -16,6 +16,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 import random
+import os.path
 attrs_dict = { 'class': 'required' }
 
 class RegistrationFormZ(RegistrationForm):
@@ -75,10 +76,12 @@ class RegistrationFormZ(RegistrationForm):
         raise NotImplementedError
 
 class UpdateForm(forms.ModelForm):
-    username= forms.CharField ()
-    public_name=forms.CharField()
-    pic_url=forms.CharField()
-    email=forms.CharField()
+    username= forms.CharField(label='Kullanici Adi' )
+    public_name=forms.CharField(label='Isim')
+    pic_url=forms.CharField(label='Avatar Url ')
+    pic_upload=forms.FileField(label ='Avatar',required=False)
+    #pic_upload=forms.CharField()
+    email=forms.CharField(label='EPosta')
     location=forms.CharField(required=False)
     password=forms.CharField(widget=forms.PasswordInput,required=False)
     model= UserProfile
@@ -103,12 +106,16 @@ class UserProfileUpdate(UpdateView):
         return UserProfile.objects.get(user=u)
     def get_success_url(self):
         return '/myprofile'
+    def handle_uploaded_file(self,f,username):
+        BASE=os.path.dirname(os.path.abspath(__file__))
+	with open(os.path.join(BASE,"avatars/"+username+".jpg") , 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
     def form_valid(self,form):
         username= self.request.POST['username']
         password=self.request.POST['password']
         email=self.request.POST['email']
         location=self.request.POST['location']
-	
         if  User.objects.filter(username=username).count() == 1 and username != self.request.user.username  :
             messages.add_message(self.request,40,'Username must be unique')     
         else:
@@ -133,6 +140,9 @@ class UserProfileUpdate(UpdateView):
 			return HttpResponseRedirect(self.get_success_url())
                 u.save()
                 instance= form.save()
+	        if 'pic_upload' in self.request.FILES:
+                    pic_upload=self.request.FILES['pic_upload']
+		    self.handle_uploaded_file(pic_upload,username)
                 messages.add_message(self.request, 20,'success')  
         return HttpResponseRedirect(self.get_success_url())
     def is_number(self,s): 

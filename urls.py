@@ -11,6 +11,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve'),
+
+    url(r'^avatars/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': '/var/en-iyi-tavsiye/iface/avatars'}),
     url(r'^$', 'iface.views.log_in'),
     url(r'^login/$', 'iface.views.log_in'),
     url(r'logout/', 'iface.views.exit'),

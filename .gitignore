@@ -2,7 +2,7 @@
 *.pot
 *.pyc
 local_settings.py
-
+/iface/avatars/
 *.py[co]
 *.sw[po]
 
